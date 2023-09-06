@@ -1,5 +1,5 @@
 # rest-automation
 
 ## How to contribute
-* push your changes to branch and create a Pull Request
+* Make your changes in a new branch and create a Pull Request to `main`
 * Install *EditorConfig* in your IDE to ensure proper formatting
