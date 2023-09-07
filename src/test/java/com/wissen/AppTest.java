@@ -3,6 +3,9 @@ package com.wissen;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
+import java.io.IOException;
+import java.util.Properties;
+
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -14,9 +17,10 @@ import io.restassured.http.ContentType;
 public class AppTest {
 
     @BeforeAll
-    public static void setup() {
-        RestAssured.baseURI = "https://uat-epoint.mautoafrica.com";
-        RestAssured.port = 443;
+    public static void setup() throws IOException {
+        PropertiesReader propReader = PropertiesReader.getReader();
+        RestAssured.baseURI = propReader.getHost();
+        RestAssured.port = propReader.getPort();
     }
 
     @AfterAll
@@ -30,7 +34,6 @@ public class AppTest {
             .contentType(ContentType.MULTIPART)
             .multiPart("id", "1685440983-021e-4821-b08a-e4a144396409")
             .multiPart("user_type", "driver")
-            .header("", "")
         .when()
             .post("/v3/api/wallet/get")
         .then()
