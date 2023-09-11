@@ -1,6 +1,7 @@
 package com.wissen.Wallet;
 
 import static io.restassured.RestAssured.*;
+
 import static org.hamcrest.Matchers.*;
 
 import java.io.IOException;
@@ -24,7 +25,7 @@ public class WalletTest {
         RestAssured.baseURI = propReader.getHost();
         RestAssured.port = propReader.getPort();
     }
-
+    
     @AfterAll
     public static void teardown() {
         RestAssured.reset();
