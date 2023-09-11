@@ -1,4 +1,4 @@
-package com.wissen.Wallet;
+package com.wissen.wallet;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
