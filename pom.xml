@@ -24,6 +24,14 @@
             <version>5.3.1</version>
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.kie.modules/com-fasterxml-jackson -->
+<dependency>
+    <groupId>org.kie.modules</groupId>
+    <artifactId>com-fasterxml-jackson</artifactId>
+    <version>6.5.0.Final</version>
+    <type>pom</type>
+</dependency>
+
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
