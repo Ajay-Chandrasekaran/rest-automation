@@ -1,0 +1,19 @@
+{
+    "status": "1",
+    "response": {
+        "message": "You are Logged In successfully",
+        "profile": {
+            "id": "63da2d619fcb821b3f2689b5",
+            "lead_id": 26192,
+            "name": "BASILE",
+            "surname": "SESSOU",
+            "selected_model": "",
+            "model_list": [
+                "CHAP CHAP",
+                "COMMANDO",
+                "PIAM"
+            ]
+        },
+        "type": "1"
+    }
+}
