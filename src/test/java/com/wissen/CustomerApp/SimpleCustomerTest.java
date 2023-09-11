@@ -1,4 +1,4 @@
-package com.wissen.customerapp;
+package com.wissen.CustomerApp;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.greaterThan;

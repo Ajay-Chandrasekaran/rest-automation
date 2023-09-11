@@ -1,0 +1,17 @@
+{
+  "transactionId": "15",
+  "amount": 5000,
+  "currency": "xof",
+  "payMode": "cash",
+  "batterySlot": "1",
+  "oldBatteryUuid": "CM/BJ/LFP/10312",
+  "newBatteryUuid": "CM/BJ/LFP/10113",
+  "customerId": "BJC534910013",
+  "agentId": "FIDJROSSE TOGBIN",
+  "stationId": "BJ/ABC/300",
+  "gatewayId": "1",
+  "status": "1",
+  "vehicleNumber": "CM3856",
+  "updatedBy": "CUSTOMER_PORTAL",
+  "locationId": "1643178165-d841-4932-9d11-0d39b8a62cfd"
+}
