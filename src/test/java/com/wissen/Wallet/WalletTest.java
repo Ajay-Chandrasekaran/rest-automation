@@ -23,7 +23,7 @@ public class WalletTest {
         RestAssured.baseURI = propReader.getHost();
         RestAssured.port = propReader.getPort();
     }
-    
+
     @AfterAll
     public static void teardown() {
         RestAssured.reset();

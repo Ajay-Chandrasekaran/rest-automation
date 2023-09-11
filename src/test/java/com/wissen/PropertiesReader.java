@@ -36,9 +36,9 @@ public class PropertiesReader {
     public String getHost() {
         return host;
     }
-    
-    public void userDev() {
-    	this.port=8082;
-    	this.host="http://dev.spironet.com";
+
+    public void useDev() {
+    	this.port = 8082;
+    	this.host = "http://dev.spironet.com";
     }
 }
