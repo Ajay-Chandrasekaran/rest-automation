@@ -1,11 +1,9 @@
-package com.wissen.Wallet;
+package com.wissen.wallet;
 
 import static io.restassured.RestAssured.*;
-
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
 
 import java.io.IOException;
-import java.util.Properties;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterAll;
