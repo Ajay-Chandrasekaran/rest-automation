@@ -14,17 +14,17 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import com.wissen.PropertiesReader;
-
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+
+import com.wissen.PropertiesReader;
 
 public class CustomerEnergy {
 
 	@BeforeAll
 	public static void setup() throws IOException {
 		PropertiesReader propReader = PropertiesReader.getReader();
-		propReader.userDev();
+		propReader.useDev();
 		RestAssured.baseURI = propReader.getHost();
 		RestAssured.port = propReader.getPort();
 	}
@@ -36,9 +36,13 @@ public class CustomerEnergy {
 
 	@Test
 	void getCustomerEnergyPlanTest() {
-		given().contentType(ContentType.JSON).when().get("/customers/energy-plans").then().statusCode(HttpStatus.SC_OK)
-				.body("message", equalTo("Customer fetched successfully."));
-
+		given()
+            .contentType(ContentType.JSON)
+        .when()
+            .get("/customers/energy-plans")
+        .then()
+            .statusCode(HttpStatus.SC_OK)
+			.body("message", equalTo("Customer fetched successfully."));
 	}
 
 	@Test
@@ -48,13 +52,16 @@ public class CustomerEnergy {
 			Object obj = parser.parse(new FileReader("/Users/User/Desktop/course.json"));
 			JSONObject jsonObject = (JSONObject) obj;
 
-			given().contentType(ContentType.JSON).body(jsonObject).when().put("/customers/energy-plans").then()
-					.statusCode(HttpStatus.SC_NOT_FOUND)
-					.body("message", equalTo("Customer has already availed one plan or existing plan not cleared."));
+			given()
+                .contentType(ContentType.JSON)
+                .body(jsonObject)
+            .when()
+                .put("/customers/energy-plans")
+            .then()
+				.statusCode(HttpStatus.SC_NOT_FOUND)
+				.body("message", equalTo("Customer has already availed one plan or existing plan not cleared."));
 		} catch (Exception e) {
-			// TODO: handle exception
+            e.printStackTrace();
 		}
 	}
-	
-
 }
