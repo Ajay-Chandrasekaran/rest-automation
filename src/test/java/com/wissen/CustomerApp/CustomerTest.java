@@ -2,7 +2,9 @@ package com.wissen.CustomerApp;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.greaterThan;
+import static io.restassured.module.jsv.JsonSchemaValidator.*;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,7 +22,8 @@ import com.wissen.PropertiesReader;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
-public class SimpleCustomerTest {
+public class CustomerTest {
+    private static final String SCHEMAPATH = "src/test/resources/jsonschemas";
 
     @BeforeAll
     public static void setup() throws IOException {
@@ -69,5 +72,21 @@ public class SimpleCustomerTest {
         .then()
             .statusCode(HttpStatus.SC_OK)
             .body("response.station.size()", greaterThan(0));
+    }
+
+    @Test
+    public void getServiceStations () throws IOException {
+        given()
+            .contentType(ContentType.MULTIPART)
+            .multiPart("driver_id", "1684172807-7156-4fe3-b727-b418f13c4f58")
+            .multiPart("lat", "6.361079")
+            .multiPart("lon", "2.422579")
+            .header("Authkey", "melectric")
+        .when()
+            .post("/servicestation/get")
+        .then()
+            .statusCode(HttpStatus.SC_OK)
+            .body("response.station.size()", greaterThan(0))
+            .body(matchesJsonSchema(new FileInputStream("src/test/resources/jsonschemas/serviceStations.json")));
     }
 }
