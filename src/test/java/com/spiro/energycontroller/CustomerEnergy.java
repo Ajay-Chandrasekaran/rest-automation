@@ -47,7 +47,7 @@ public class CustomerEnergy {
 	void putCustomeEnergyPlanTest() throws FileNotFoundException {
 		JSONParser parser = new JSONParser();
 		try {
-			Object obj = parser.parse(new FileReader("src/test/resources/customerenergyplan/putCustomerEnergyPlan"));
+			Object obj = parser.parse(new FileReader("src/test/resources/customerenergyplan/putCustomerEnergyPla.json"));
 			JSONObject jsonObject = (JSONObject) obj;
 
 			given().contentType(ContentType.JSON).body(jsonObject).when().put("/customers/energy-plans").then()
@@ -71,7 +71,7 @@ public class CustomerEnergy {
 			Object obj = parser.parse(new FileReader("src/test/resources/SwapHistory"));
 			JSONObject jsonObject = (JSONObject) obj;
 
-			Object obj1 = parser.parse(new FileReader("src/test/resources/customerenergyplan/jsonswaphistory"));
+			Object obj1 = parser.parse(new FileReader("src/test/resources/customerenergyplan/jsonswaphistory.json"));
 			JSONObject jsonObject1 = (JSONObject) obj1;
 
 			ExtractableResponse<Response> extract = given().contentType(ContentType.JSON).body(jsonObject).when()
@@ -98,7 +98,7 @@ public class CustomerEnergy {
 
 		JSONParser parser = new JSONParser();
 
-		Object parse = parser.parse(new FileReader("src/test/resources/customerenergyplan/customerpaymenthistory"));
+		Object parse = parser.parse(new FileReader("src/test/resources/customerenergyplan/customerpaymenthistory.json"));
 
 		given().contentType(ContentType.JSON).body(parse).when().post("/customers/payments/history").then()
 				.statusCode(HttpStatus.SC_CREATED)
