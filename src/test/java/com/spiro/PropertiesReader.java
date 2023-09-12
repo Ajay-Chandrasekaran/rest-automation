@@ -35,7 +35,7 @@ public class PropertiesReader {
     }
 
     public void useDevEnv() {
-    	this.port = Integer.parseInt(this.props.getProperty("dev.port"));
+        this.port = Integer.parseInt(this.props.getProperty("dev.port"));
         this.host = this.props.getProperty("dev.host");
     }
 
