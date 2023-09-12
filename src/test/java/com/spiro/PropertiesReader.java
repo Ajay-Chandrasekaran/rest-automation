@@ -1,4 +1,4 @@
-package com.wissen;
+package com.spiro;
 
 import java.io.FileInputStream;
 import java.io.IOException;
