@@ -24,9 +24,6 @@ public class PropertiesReader {
         this.props = new Properties();
         this.props.load(file);
         file.close();
-
-        this.port = Integer.parseInt(this.props.getProperty("uat.port"));
-        this.host = this.props.getProperty("uat.host");
     }
 
     public int getPort() {
@@ -37,8 +34,13 @@ public class PropertiesReader {
         return host;
     }
 
-    public void useDev() {
-    	this.port = 8082;
-    	this.host = "http://dev.spironet.com";
+    public void useDevEnv() {
+    	this.port = Integer.parseInt(this.props.getProperty("dev.port"));
+        this.host = this.props.getProperty("dev.host");
+    }
+
+    public void useTestEnv() {
+        this.port = Integer.parseInt(this.props.getProperty("uat.port"));
+        this.host = this.props.getProperty("uat.host");
     }
 }
