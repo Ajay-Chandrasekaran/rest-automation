@@ -1,4 +1,4 @@
-package com.wissen;
+package com.spiro;
 
 /**
  * Test REST Endpoints
