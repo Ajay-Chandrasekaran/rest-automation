@@ -20,6 +20,7 @@ public class WalletTest {
     @BeforeAll
     public static void setup() throws IOException {
         PropertiesReader propReader = PropertiesReader.getReader();
+        propReader.useTestEnv();
         RestAssured.baseURI = propReader.getHost();
         RestAssured.port = propReader.getPort();
     }
