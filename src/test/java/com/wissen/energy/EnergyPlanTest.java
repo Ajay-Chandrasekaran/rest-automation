@@ -1,6 +1,7 @@
 package com.wissen.energy;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -50,15 +51,29 @@ public class EnergyPlanTest {
 	@Test
 	public void getEnergyPlanById() throws IOException {
 
-		int id = 34;
-		Response res = given().when().get("http://dev.spironet.com:8082/energy-plans/" + id + "").then()
-				.statusCode(HttpStatus.SC_OK).log().body().extract().response();
+		int id = 43;
+		Response response = given().when().get("http://dev.spironet.com:8082/energy-plans/" + id + "").then()
+				.statusCode(HttpStatus.SC_OK)
+				
+				 .body("response.offer.offerName",equalTo("EnergyPlan_15"))
+				 .body("response.offer.offerCode",equalTo("E15"))
+				 .body("response.swapCount",equalTo(9)) .body("response.dailyPayValue",
+				 equalTo(193.0F)) 
+				 //.body("response.offer.dialCode",equalTo(229))
+				// .body("response.offer.location",equalTo("1643178165-d841-4932-9d11-0d39b8a62cfd"))
+				 .body("response.offer.endDate", equalTo("2023-09-10"))
+				 .body("response.offer.startDate",equalTo("2023-09-07"))
+				
+						.log().body().extract().response();
 		Path path = Paths.get("src/test/resources/energyPlan/", "energyPlanResponse.json");
-		String jsonstring = res.asString();
+		String jsonstring = response.asString();
 		byte[] responseAsStringByte = jsonstring.getBytes();
 
 		Files.write(path, responseAsStringByte);
-
+		/*
+		 * .statusCode(HttpStatus.SC_OK) .body("response.message",
+		 * equalTo("Wallet Details")) .body("response.currency_code", equalTo("XOF"));
+		 */
 	}
 	@Test
 	public void patchEnergyPlan() throws IOException, JSONException {
