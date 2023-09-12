@@ -87,6 +87,6 @@ public class CustomerTest {
         .then()
             .statusCode(HttpStatus.SC_OK)
             .body("response.station.size()", greaterThan(0))
-            .body(matchesJsonSchema(new FileInputStream("src/test/resources/jsonschemas/serviceStations.json")));
+            .body(matchesJsonSchema(new FileInputStream("src/test/resources/jsonschemas/servicestations-schema.json")));
     }
 }
