@@ -37,8 +37,7 @@ public class CustomerEnergy {
 	public static void teardown() {
 		RestAssured.reset();
 	}
-
-	@Test
+    @Test
 	void getCustomerEnergyPlanTest() {
 		given().contentType(ContentType.JSON).when().get("/customers/energy-plans").then().statusCode(HttpStatus.SC_OK)
 				.body("message", equalTo("Customer fetched successfully."));
@@ -88,10 +87,28 @@ public class CustomerEnergy {
 
 	@Test
 	void getCustomersRemainingAmount() {
-		 given().pathParam("customer-id", "12345").contentType(ContentType.JSON).when()
+		given().pathParam("customer-id", "BJC534910013").contentType(ContentType.JSON).when()
 				.get("/customers/energy-plan-remaining-amount/{customer-id}").then().statusCode(HttpStatus.SC_OK)
 				.body("message", equalTo("Fetched customer remaining due amount Of energy plan"));
-				
+
 	}
 
+	@Test
+	void postCustomerSwapHistoryTest() throws FileNotFoundException, IOException, ParseException {
+
+		JSONParser parser = new JSONParser();
+
+		Object parse = parser.parse(new FileReader("src/test/resources/customerenergyplan/customerpaymenthistory"));
+
+		given().contentType(ContentType.JSON).body(parse).when().post("/customers/payments/history").then()
+				.statusCode(HttpStatus.SC_CREATED)
+				.body("message[0]", equalTo("Payment history created successfully for customer"));
+	}
+
+	@Test
+	void getCustomerSwapHistoryTest() {
+		given().pathParam("customer-id", "BJC534910013").contentType(ContentType.JSON).when()
+		.get("/customers/payment-history/{customer-id}").then().statusCode(HttpStatus.SC_OK)
+		.body("message", equalTo("Fetched energy plan payment history."));
+	}
 }
