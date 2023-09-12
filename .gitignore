@@ -25,3 +25,7 @@ replay_pid*
 
 # Maven build files
 target/
+
+# Eclipse files
+.classpath
+.settings/

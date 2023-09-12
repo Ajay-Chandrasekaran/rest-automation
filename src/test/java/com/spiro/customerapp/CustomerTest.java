@@ -28,6 +28,7 @@ public class CustomerTest {
     @BeforeAll
     public static void setup() throws IOException {
         PropertiesReader propReader = PropertiesReader.getReader();
+        propReader.useTestEnv();
         RestAssured.baseURI = propReader.getHost();
         RestAssured.port = propReader.getPort();
         RestAssured.basePath = "/v3/api/driver";
@@ -87,6 +88,6 @@ public class CustomerTest {
         .then()
             .statusCode(HttpStatus.SC_OK)
             .body("response.station.size()", greaterThan(0))
-            .body(matchesJsonSchema(new FileInputStream("src/test/resources/jsonschemas/servicestations-schema.json")));
+            .body(matchesJsonSchema(new FileInputStream(SCHEMAPATH + "/servicestations-schema.json")));
     }
 }
