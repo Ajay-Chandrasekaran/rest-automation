@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class EnergyResponse {
 	private String message;
 	 private boolean success;
-	 private float status;
+	 private int status;
 	 ArrayList<Object> response =new ArrayList<>();
 
 
@@ -19,7 +19,7 @@ public class EnergyResponse {
 	  return success;
 	 }
 
-	 public float getStatus() {
+	 public int getStatus() {
 	  return status;
 	 }
 
@@ -43,7 +43,7 @@ public class EnergyResponse {
 	  this.success = success;
 	 }
 
-	 public void setStatus(float status) {
+	 public void setStatus(int status) {
 	  this.status = status;
 	 }
 
