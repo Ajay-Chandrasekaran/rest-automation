@@ -1,4 +1,4 @@
-package com.wissen.customerapp;
+package com.spiro.customerapp;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.greaterThan;
@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
-import com.wissen.PropertiesReader;
+import com.spiro.PropertiesReader;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;

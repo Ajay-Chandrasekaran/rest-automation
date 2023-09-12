@@ -1,4 +1,4 @@
-package com.wissen.swapapp;
+package com.spiro.swapapp;
 
 public class SwapTest {
 
