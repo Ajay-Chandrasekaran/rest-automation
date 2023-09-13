@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ObjectAndJsonUtils {
 
-    public static JsonNode getJsonNodefromFile(String path) throws IOException {
+    public static JsonNode getJsonNodeFromFile(String path) throws IOException {
         JsonNode node = null;
 
         try (FileReader fr = new FileReader(path)) {
@@ -19,5 +19,9 @@ public class ObjectAndJsonUtils {
         }
 
         return node;
+    }
+
+    public static JsonNode getJsonNodeFromString(String json) throws IOException {
+        return new ObjectMapper().readTree(json);
     }
 }
