@@ -1,4 +1,5 @@
 {
     "java.configuration.updateBuildConfiguration": "automatic",
-    "editor.formatOnSave": false
+    "editor.formatOnSave": false,
+    "terminal.integrated.defaultProfile.windows": "Git Bash"
 }
