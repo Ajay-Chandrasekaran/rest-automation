@@ -1,4 +1,4 @@
-package com.wissen;
+package com.spiro;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -24,9 +24,6 @@ public class PropertiesReader {
         this.props = new Properties();
         this.props.load(file);
         file.close();
-
-        this.port = Integer.parseInt(this.props.getProperty("uat.port"));
-        this.host = this.props.getProperty("uat.host");
     }
 
     public int getPort() {
@@ -35,5 +32,15 @@ public class PropertiesReader {
 
     public String getHost() {
         return host;
+    }
+
+    public void useDevEnv() {
+        this.port = Integer.parseInt(this.props.getProperty("dev.port"));
+        this.host = this.props.getProperty("dev.host");
+    }
+
+    public void useTestEnv() {
+        this.port = Integer.parseInt(this.props.getProperty("uat.port"));
+        this.host = this.props.getProperty("uat.host");
     }
 }

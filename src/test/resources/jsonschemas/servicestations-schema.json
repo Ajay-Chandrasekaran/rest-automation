@@ -1,0 +1,65 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+        "status": {
+            "type": "string"
+        },
+        "response": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "station": {
+                    "type": "array",
+                    "items": [
+                        {
+                            "type": "object",
+                            "properties": {
+                                "station_name": {
+                                    "type": "string"
+                                },
+                                "station_address": {
+                                    "type": "string"
+                                },
+                                "station_location": {
+                                    "type": "object",
+                                    "properties": {
+                                        "lng": {
+                                            "type": "number"
+                                        },
+                                        "lat": {
+                                            "type": "number"
+                                        }
+                                    },
+                                    "required": [
+                                        "lng",
+                                        "lat"
+                                    ]
+                                },
+                                "image": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "station_name",
+                                "station_address",
+                                "station_location",
+                                "image"
+                            ]
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "message",
+                "station"
+            ]
+        }
+    },
+    "required": [
+        "status",
+        "response"
+    ]
+}

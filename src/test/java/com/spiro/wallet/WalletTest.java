@@ -1,4 +1,4 @@
-package com.wissen.wallet;
+package com.spiro.wallet;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.equalTo;
@@ -10,7 +10,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import com.wissen.PropertiesReader;
+import com.spiro.PropertiesReader;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -20,6 +20,7 @@ public class WalletTest {
     @BeforeAll
     public static void setup() throws IOException {
         PropertiesReader propReader = PropertiesReader.getReader();
+        propReader.useTestEnv();
         RestAssured.baseURI = propReader.getHost();
         RestAssured.port = propReader.getPort();
     }
