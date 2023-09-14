@@ -139,4 +139,11 @@ public class CustomerEnergyTest {
             .statusCode(HttpStatus.SC_OK)
             .body("message", equalTo("Fetched energy plan payment history."));
     }
+
+    @Test
+    public void getEnergyPlanBycustomerIdsDialCodeTest(){
+        given().pathParam("customer-id", "BJC534910013").pathParam("country-code", "229")
+        .contentType(ContentType.JSON).when().get("/customers/{customer-id}/{country-code}").then().statusCode(HttpStatus.SC_OK)
+        .body("message", equalTo("Fetched energy plan list on the basis of dial code :: 229 and customerId :: BJC534910013"));
+    }
 }
