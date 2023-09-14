@@ -21,7 +21,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
-import com.spiro.PropertiesReader;
+import com.spiro.utils.PropertiesReader;
 
 public class CustomerEnergyTest {
 

@@ -17,10 +17,10 @@ import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
-import com.spiro.PropertiesReader;
-
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+
+import com.spiro.utils.PropertiesReader;
 
 public class CustomerTest {
     private static final String SCHEMAPATH = "src/test/resources/jsonschemas";
