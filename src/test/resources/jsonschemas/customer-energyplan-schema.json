@@ -1,0 +1,180 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+        "lastUpdatedDate": {
+            "type": "string"
+        },
+        "lastUpdatedBy": {
+            "type": "string"
+        },
+        "createdDate": {
+            "type": "string"
+        },
+        "createdBy": {
+            "type": "string"
+        },
+        "id": {
+            "type": "integer"
+        },
+        "customerId": {
+            "type": "string"
+        },
+        "energyPlanInfo": {
+            "type": "object",
+            "properties": {
+                "lastUpdatedDate": {
+                    "type": "string"
+                },
+                "lastUpdatedBy": {
+                    "type": "string"
+                },
+                "createdDate": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "offer": {
+                    "type": "object",
+                    "properties": {
+                        "lastUpdatedDate": {
+                            "type": "string"
+                        },
+                        "lastUpdatedBy": {
+                            "type": "string"
+                        },
+                        "createdDate": {
+                            "type": "string"
+                        },
+                        "createdBy": {
+                            "type": "string"
+                        },
+                        "offerCode": {
+                            "type": "string"
+                        },
+                        "offerName": {
+                            "type": "string"
+                        },
+                        "countryCode": {
+                            "type": "string"
+                        },
+                        "countryName": {
+                            "type": "string"
+                        },
+                        "status": {
+                            "type": "integer"
+                        },
+                        "startDate": {
+                            "type": "string"
+                        },
+                        "endDate": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "lastUpdatedDate",
+                        "lastUpdatedBy",
+                        "createdDate",
+                        "createdBy",
+                        "offerCode",
+                        "offerName",
+                        "countryCode",
+                        "countryName",
+                        "status",
+                        "startDate",
+                        "endDate"
+                    ]
+                },
+                "planDuration": {
+                    "type": "integer"
+                },
+                "monthlyPackage": {
+                    "type": "integer"
+                },
+                "swapCount": {
+                    "type": "integer"
+                },
+                "dailyPayValue": {
+                    "type": "number"
+                },
+                "percentageBenefit": {
+                    "type": "number"
+                },
+                "costOnDemand": {
+                    "type": "number"
+                },
+                "costSaving": {
+                    "type": "number"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "isAvailed": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "lastUpdatedDate",
+                "lastUpdatedBy",
+                "createdDate",
+                "createdBy",
+                "id",
+                "offer",
+                "planDuration",
+                "monthlyPackage",
+                "swapCount",
+                "dailyPayValue",
+                "percentageBenefit",
+                "costOnDemand",
+                "costSaving",
+                "status",
+                "isAvailed"
+            ]
+        },
+        "startDate": {
+            "type": "string"
+        },
+        "endDate": {
+            "type": "string"
+        },
+        "status": {
+            "type": "integer"
+        },
+        "availedSwaps": {
+            "type": "integer"
+        },
+        "totalAmountPaid": {
+            "type": "number"
+        },
+        "daysPaid": {
+            "type": "integer"
+        },
+        "missedDays": {
+            "type": "integer"
+        },
+        "overdueAmount": {
+            "type": "number"
+        }
+    },
+    "required": [
+        "lastUpdatedDate",
+        "lastUpdatedBy",
+        "createdDate",
+        "createdBy",
+        "id",
+        "customerId",
+        "energyPlanInfo",
+        "startDate",
+        "endDate",
+        "status",
+        "availedSwaps",
+        "totalAmountPaid",
+        "daysPaid",
+        "missedDays",
+        "overdueAmount"
+    ]
+}

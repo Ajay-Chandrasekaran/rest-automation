@@ -2,7 +2,7 @@ package com.spiro.customerapp;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.greaterThan;
-import static io.restassured.module.jsv.JsonSchemaValidator.*;
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchema;
 
 import java.io.FileInputStream;
 import java.io.IOException;
