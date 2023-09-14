@@ -71,7 +71,7 @@ public class CustomerEnergyTest {
 	public void putCustomeEnergyPlanTest() throws FileNotFoundException {
 		JSONParser parser = new JSONParser();
 		try {
-			Object obj = parser
+			Object  obj = parser
 					.parse(new FileReader("src/test/resources/customerenergyplan/putCustomerEnergyPlan.json"));
 			JSONObject jsonObject = (JSONObject) obj;
 
