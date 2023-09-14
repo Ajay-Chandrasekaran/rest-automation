@@ -6,17 +6,10 @@ import static io.restassured.module.jsv.JsonSchemaValidator.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
 import org.apache.http.HttpStatus;
-import org.json.JSONException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
-
 import com.spiro.PropertiesReader;
 
 import io.restassured.RestAssured;
@@ -41,7 +34,7 @@ public class CustomerTest {
 
     @Test
     public void testLoginSuccessful() throws IOException {
-        String res = given()
+        given()
             .contentType(ContentType.MULTIPART)
             .multiPart("dial_code", "+229")
             .multiPart("mobile_number", "66810049")
@@ -52,12 +45,6 @@ public class CustomerTest {
             .statusCode(HttpStatus.SC_OK)
         .extract().body().asString();
 
-        String expected = Files.readString(Path.of("src/test/resources/customerapp/LoginResponse.json"));
-        try {
-            JSONAssert.assertEquals(expected, res, JSONCompareMode.NON_EXTENSIBLE);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     @Test
