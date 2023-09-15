@@ -2,6 +2,8 @@ package com.spiro.entities;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -13,6 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class EnergyPlanFullResponse {
     private String message;
     private Boolean success;
