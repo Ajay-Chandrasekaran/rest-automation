@@ -12,6 +12,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class EnergyPlanResponse {
+    private Integer id;
+    private String customerId;
     private String startDate;
     private String endDate;
     private Integer status;
