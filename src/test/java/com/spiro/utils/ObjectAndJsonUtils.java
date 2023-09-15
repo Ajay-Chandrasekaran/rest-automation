@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -29,6 +30,7 @@ public class ObjectAndJsonUtils {
     public static <T> T createObjectFromJsonFile(String path, Class<T> classType) throws IOException {
         File f = new File(path);
         ObjectMapper oMapper = new ObjectMapper();
+        oMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         T obj = oMapper.readValue(f, classType);
         return obj;
     }
