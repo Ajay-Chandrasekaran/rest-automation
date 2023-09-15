@@ -68,7 +68,7 @@ public class CustomerEnergyTest {
 	}
 
 	@Test
-	public void putCustomeEnergyPlanTest() throws FileNotFoundException {
+	public void putCustomeEnergyPlanTest() throws IOException, ParseException {
 		JSONParser parser = new JSONParser();
 		try {
 			Object  obj = parser
@@ -79,8 +79,19 @@ public class CustomerEnergyTest {
 					.body("message", equalTo("Customer has already availed one plan or existing plan not cleared."));
 		} catch (Exception e) {
 			e.printStackTrace();
+
 		}
+        putCustomerEnergyPlanTest1();
 	}
+
+    public void putCustomerEnergyPlanTest1() throws FileNotFoundException, IOException, ParseException{
+		JSONParser parser = new JSONParser();
+		Object  obj = parser
+				.parse(new FileReader("src/test/resources/customerenergyplan/putcustomersbygivingdiffenergyplan.json"));
+		JSONObject jsonObject = (JSONObject) obj;
+		
+
+    }
 
 	@Test
 	public void getCustomerByIdTest() {
@@ -105,7 +116,7 @@ public class CustomerEnergyTest {
 
 		given().contentType(ContentType.JSON).body(parse).when().post("/customers/payments/history").then()
 				.statusCode(HttpStatus.SC_CREATED)
-				.body("message[0]", equalTo("Payment history created successfully for customer"));
+				.body("message[0]", equalTo("BJC534910013 Payment history created successfully for customer"));
 	}
 
 	@Test
