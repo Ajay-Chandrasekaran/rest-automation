@@ -12,7 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class EnergyPlan {
-    private String lastUpdatedBy;
     private String createdBy;
     private Integer planTotalValue;
     private String planName;

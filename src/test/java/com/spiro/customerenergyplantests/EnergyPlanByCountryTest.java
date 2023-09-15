@@ -2,7 +2,6 @@ package com.spiro.customerenergyplantests;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -12,12 +11,12 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+
 import com.spiro.entities.EnergyPlan;
 import com.spiro.utils.ObjectAndJsonUtils;
 import com.spiro.utils.PropertiesReader;
-
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 
 public class EnergyPlanByCountryTest {
 
@@ -41,7 +40,7 @@ public class EnergyPlanByCountryTest {
      * Creates new Energy plan for Kenya (+254)
      * Verify if this energy plan is getting listed
      */
-    // @Test
+    @Test
     public void checkEnergyPlanLocTest() throws IOException {
         RestAssured.baseURI = propReader.getHost();
         RestAssured.port = propReader.getPort();
@@ -49,13 +48,15 @@ public class EnergyPlanByCountryTest {
         String startDate = LocalDate.now().toString();
         String endDate = LocalDate.now().plusDays(5).toString();
 
+        int swapCount = 5;
+        String locationId = "1686137320-5524-4314-bc0f-9ba65f088a58";
+
         EnergyPlan reqBody = ObjectAndJsonUtils.createObjectFromJsonFile(ENTITIES + "energy-plan.json", EnergyPlan.class);
         reqBody.setStartDate(startDate);
         reqBody.setEndDate(endDate);
-        reqBody.setSwapCount(5);
-        reqBody.setLocationId("1686137320-5524-4314-bc0f-9ba65f088a58");
+        reqBody.setSwapCount(swapCount);
+        reqBody.setLocationId(locationId);
 
-        Integer customerId = Integer.valueOf(0);
         Integer energyPlanId = given()
             .header("Content-Type", ContentType.JSON)
             .body(reqBody)
@@ -66,14 +67,16 @@ public class EnergyPlanByCountryTest {
         .extract()
             .path("response.id");
 
-        assertTrue(energyPlanId > 0);
+        // value of customerId doesn't affect the response
+        int customerId = 0;
+        int dialCode = 254;
 
         given()
         .when()
-            .get("/customers/"+ customerId + "/" + energyPlanId)
+            .get("/customers/"+ customerId + "/" + dialCode)
         .then()
             .body("success", equalTo(true))
-            .body("response.find { it.id == " + energyPlanId + " }.id", equalTo(energyPlanId))
+            .body("response.find { it.id = " + energyPlanId + " }.id", equalTo(energyPlanId))
             .body("response[0].offer.countryCode",equalTo("KE"));
     }
 
@@ -91,11 +94,14 @@ public class EnergyPlanByCountryTest {
         String startDate = LocalDate.now().toString();
         String endDate = LocalDate.now().plusDays(5).toString();
 
+        int swapCount = 5;
+        String locationId = "1686137320-5524-4314-bc0f-9ba65f088a58";
+
         EnergyPlan reqBody = ObjectAndJsonUtils.createObjectFromJsonFile(ENTITIES + "energy-plan.json", EnergyPlan.class);
         reqBody.setStartDate(startDate);
         reqBody.setEndDate(endDate);
-        reqBody.setSwapCount(5);
-        reqBody.setLocationId("1686137320-5524-4314-bc0f-9ba65f088a58");
+        reqBody.setSwapCount(swapCount);
+        reqBody.setLocationId(locationId);
 
         Integer energyPlanId = given()
             .header("Content-Type", ContentType.JSON)
@@ -107,8 +113,6 @@ public class EnergyPlanByCountryTest {
         .extract()
             .path("response.id");
 
-        assertTrue(energyPlanId > 0);
-
         given()
         .when()
             .get("/energy-plans/" + energyPlanId)
@@ -117,6 +121,7 @@ public class EnergyPlanByCountryTest {
             .body("response.id", equalTo(energyPlanId))
             .body("response.offer.status", equalTo(1))
             .body("response.offer.startDate", equalTo(startDate))
-            .body("response.offer.endDate", equalTo(endDate));
+            .body("response.offer.endDate", equalTo(endDate))
+            .body("response.swapCount", equalTo(swapCount));
     }
 }
