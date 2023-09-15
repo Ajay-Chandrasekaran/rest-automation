@@ -20,17 +20,17 @@ import com.spiro.utils.PropertiesReader;
 
 public class EnergyPlanByCountryTest {
 
-    private static final String ENTITIES = "src/test/resources/energyplanbycustomer/";
-    private static PropertiesReader propReader;
+    private final String PATH = "src/test/resources/customerenergyplantests/";
+    private PropertiesReader propReader;
 
     @BeforeAll
-    public static void setup() throws IOException {
+    public void setup() throws IOException {
         propReader = PropertiesReader.getReader();
         propReader.useDevEnv();
     }
 
     @AfterAll
-    public static void teardown() {
+    public void teardown() {
         RestAssured.reset();
     }
 
@@ -51,7 +51,7 @@ public class EnergyPlanByCountryTest {
         int swapCount = 5;
         String locationId = "1686137320-5524-4314-bc0f-9ba65f088a58";
 
-        EnergyPlan reqBody = ObjectAndJsonUtils.createObjectFromJsonFile(ENTITIES + "energy-plan.json", EnergyPlan.class);
+        EnergyPlan reqBody = ObjectAndJsonUtils.createObjectFromJsonFile(PATH + "energy-plan.json", EnergyPlan.class);
         reqBody.setStartDate(startDate);
         reqBody.setEndDate(endDate);
         reqBody.setSwapCount(swapCount);
@@ -97,7 +97,7 @@ public class EnergyPlanByCountryTest {
         int swapCount = 5;
         String locationId = "1686137320-5524-4314-bc0f-9ba65f088a58";
 
-        EnergyPlan reqBody = ObjectAndJsonUtils.createObjectFromJsonFile(ENTITIES + "energy-plan.json", EnergyPlan.class);
+        EnergyPlan reqBody = ObjectAndJsonUtils.createObjectFromJsonFile(PATH + "energy-plan.json", EnergyPlan.class);
         reqBody.setStartDate(startDate);
         reqBody.setEndDate(endDate);
         reqBody.setSwapCount(swapCount);
