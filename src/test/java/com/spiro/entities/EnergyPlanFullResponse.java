@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class EnergyPlanRestResponse {
+public class EnergyPlanFullResponse {
     private String message;
     private Boolean success;
     private Integer status;
