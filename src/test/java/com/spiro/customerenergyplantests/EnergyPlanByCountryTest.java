@@ -23,11 +23,10 @@ import com.spiro.utils.PropertiesReader;
 public class EnergyPlanByCountryTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
-    private static PropertiesReader propReader;
 
     @BeforeAll
     public static void setup() throws IOException {
-        propReader = PropertiesReader.getReader();
+        PropertiesReader propReader = PropertiesReader.getReader();
         RestAssured.baseURI = propReader.getHost();
         RestAssured.port = propReader.getPort();
     }
