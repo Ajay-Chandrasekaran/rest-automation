@@ -74,6 +74,7 @@ public class EnergyPlanRemainingAmountTest {
         Payment payment = ObjectAndJsonUtils.createObjectFromJsonFile(RESOURCEPATH + "create-payment.json", Payment.class);
         payment.setOfferId(energyPlanId);
         payment.setCustomerId(customerId);
+        payment.setSettlementAmount(totalValue);
         boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(RestAssured.baseURI, RestAssured.port, payment);
         assertTrue(paymentSuccess, "Payment failed");
 
