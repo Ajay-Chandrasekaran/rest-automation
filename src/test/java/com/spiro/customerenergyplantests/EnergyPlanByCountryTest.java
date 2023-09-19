@@ -89,7 +89,7 @@ public class EnergyPlanByCountryTest {
      * Expected: Should return HTTP 400
      */
     @Test
-    public void getEnergyPlanForInvalidCountry() {
+    public void getEnergyPlanForInvalidCountryTest() {
         int customerId = 0;
         int dialCode = 999; // Invalid country code
 
