@@ -1,0 +1,15 @@
+{
+    "lastUpdatedBy": "ATHENA_PORTAL",
+    "createdBy": "ATHENA_PORTAL",
+    "customerId": "1692718136-3e03-4617-adad-d790371ded1b",
+    "offerId": 254,
+    "offerType": "energy_plan",
+    "offerEmi": 0,
+    "emiDate": "2023-10-18",
+    "missedEmi": 0,
+    "settlementAmount": 1000,
+    "status": "paid",
+    "locationCode": "TG",
+    "currency": "XOF",
+    "vehicleStatus": "energy_plan"
+}
