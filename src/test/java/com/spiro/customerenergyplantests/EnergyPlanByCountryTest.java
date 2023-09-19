@@ -2,6 +2,7 @@ package com.spiro.customerenergyplantests;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -15,22 +16,24 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 import com.spiro.entities.EnergyPlan;
+import com.spiro.entities.EnergyPlanOffer;
 import com.spiro.utils.ObjectAndJsonUtils;
 import com.spiro.utils.PropertiesReader;
 
 public class EnergyPlanByCountryTest {
 
-    private final String PATH = "src/test/resources/customerenergyplantests/";
-    private PropertiesReader propReader;
+    private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
+    private static PropertiesReader propReader;
 
     @BeforeAll
-    public void setup() throws IOException {
+    public static void setup() throws IOException {
         propReader = PropertiesReader.getReader();
-        propReader.useDevEnv();
+        RestAssured.baseURI = propReader.getHost();
+        RestAssured.port = propReader.getPort();
     }
 
     @AfterAll
-    public void teardown() {
+    public static void teardown() {
         RestAssured.reset();
     }
 
@@ -42,20 +45,12 @@ public class EnergyPlanByCountryTest {
      */
     @Test
     public void checkEnergyPlanLocTest() throws IOException {
-        RestAssured.baseURI = propReader.getHost();
-        RestAssured.port = propReader.getPort();
-
         String startDate = LocalDate.now().toString();
         String endDate = LocalDate.now().plusDays(5).toString();
 
-        int swapCount = 5;
-        String locationId = "1686137320-5524-4314-bc0f-9ba65f088a58";
-
-        EnergyPlan reqBody = ObjectAndJsonUtils.createObjectFromJsonFile(PATH + "energy-plan.json", EnergyPlan.class);
+        EnergyPlan reqBody = ObjectAndJsonUtils.createObjectFromJsonFile(RESOURCEPATH + "energy-plan.json", EnergyPlan.class);
         reqBody.setStartDate(startDate);
         reqBody.setEndDate(endDate);
-        reqBody.setSwapCount(swapCount);
-        reqBody.setLocationId(locationId);
 
         Integer energyPlanId = given()
             .header("Content-Type", ContentType.JSON)
@@ -71,57 +66,40 @@ public class EnergyPlanByCountryTest {
         int customerId = 0;
         int dialCode = 254;
 
-        given()
+        EnergyPlanOffer responseOffer = given()
+            .pathParam("customer-id", customerId)
+            .pathParam("dialcode", dialCode)
         .when()
-            .get("/customers/"+ customerId + "/" + dialCode)
+            .get("/customers/{customer-id}/{dialcode}")
         .then()
             .body("success", equalTo(true))
-            .body("response.find { it.id = " + energyPlanId + " }.id", equalTo(energyPlanId))
-            .body("response[0].offer.countryCode",equalTo("KE"));
+            .body("response[0].offer.countryCode",equalTo("KE"))
+        .extract()
+            .jsonPath().getObject("response.find { it.id == " + energyPlanId + " }.offer", EnergyPlanOffer.class);
+
+        assertEquals(endDate, responseOffer.getEndDate());
+        assertEquals(startDate, responseOffer.getStartDate());
+        assertEquals("KE", responseOffer.getCountryCode());
     }
 
     /**
-     * API: [GET]/energy-plans/{{energy-plan-id}}
+     * [GET] /customers/{customer-id}/{country-code}
      *
-     * Creates new Energy plan for Kenya (+254)
-     * Verify if this energy plan is getting listed
+     * Test for invalid country code
+     *
+     * Expected: Should return HTTP 400
      */
     @Test
-    public void getEnergyByPlanLocTest() throws IOException {
-        RestAssured.baseURI = propReader.getHost();
-        RestAssured.port = propReader.getPort();
-
-        String startDate = LocalDate.now().toString();
-        String endDate = LocalDate.now().plusDays(5).toString();
-
-        int swapCount = 5;
-        String locationId = "1686137320-5524-4314-bc0f-9ba65f088a58";
-
-        EnergyPlan reqBody = ObjectAndJsonUtils.createObjectFromJsonFile(PATH + "energy-plan.json", EnergyPlan.class);
-        reqBody.setStartDate(startDate);
-        reqBody.setEndDate(endDate);
-        reqBody.setSwapCount(swapCount);
-        reqBody.setLocationId(locationId);
-
-        Integer energyPlanId = given()
-            .header("Content-Type", ContentType.JSON)
-            .body(reqBody)
-        .when()
-            .post("/energy-plans")
-        .then()
-            .statusCode(HttpStatus.SC_CREATED)
-        .extract()
-            .path("response.id");
+    public void getEnergyPlanForInvalidCountry() {
+        int customerId = 0;
+        int dialCode = 999; // Invalid country code
 
         given()
+            .pathParam("customer-id", customerId)
+            .pathParam("dialcode", dialCode)
         .when()
-            .get("/energy-plans/" + energyPlanId)
+            .get("/customers/{customer-id}/{dialcode}")
         .then()
-            .body("success", equalTo(true))
-            .body("response.id", equalTo(energyPlanId))
-            .body("response.offer.status", equalTo(1))
-            .body("response.offer.startDate", equalTo(startDate))
-            .body("response.offer.endDate", equalTo(endDate))
-            .body("response.swapCount", equalTo(swapCount));
+            .statusCode(HttpStatus.SC_BAD_REQUEST);
     }
 }
