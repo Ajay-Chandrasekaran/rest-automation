@@ -21,7 +21,6 @@ public class EnergyPlanOffer {
     private String offerName;
     private String countryCode;
     private String countryName;
-    private String offerImagePath;
     private Integer status;
     private String description;
     private String startDate;
