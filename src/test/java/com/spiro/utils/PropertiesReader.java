@@ -24,6 +24,7 @@ public class PropertiesReader {
         this.props = new Properties();
         this.props.load(file);
         file.close();
+        setEnv();
     }
 
     public int getPort() {
@@ -34,13 +35,19 @@ public class PropertiesReader {
         return host;
     }
 
-    public void useDevEnv() {
-        this.port = Integer.parseInt(this.props.getProperty("dev.port"));
-        this.host = this.props.getProperty("dev.host");
-    }
+    private void setEnv() {
+        String landscape = this.props.getProperty("test.landscape");
 
-    public void useTestEnv() {
-        this.port = Integer.parseInt(this.props.getProperty("uat.port"));
-        this.host = this.props.getProperty("uat.host");
+        switch (landscape) {
+            case "uat": {
+                this.port = Integer.parseInt(this.props.getProperty("uat.port"));
+                this.host = this.props.getProperty("uat.host");
+                break;
+            }
+            default: {
+                this.port = Integer.parseInt(this.props.getProperty("dev.port"));
+                this.host = this.props.getProperty("dev.host");
+            }
+        }
     }
 }

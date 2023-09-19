@@ -28,7 +28,6 @@ public class CustomerTest {
     @BeforeAll
     public static void setup() throws IOException {
         PropertiesReader propReader = PropertiesReader.getReader();
-        propReader.useTestEnv();
         RestAssured.baseURI = propReader.getHost();
         RestAssured.port = propReader.getPort();
         RestAssured.basePath = "/v3/api/driver";

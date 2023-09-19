@@ -22,7 +22,6 @@ public class EnergyPlanByCustomerTest {
     @BeforeAll
     public static void setup() throws IOException {
         propReader = PropertiesReader.getReader();
-        propReader.useDevEnv();
         RestAssured.baseURI = propReader.getHost();
         RestAssured.port = propReader.getPort();
         RestAssured.basePath = "/customers";
