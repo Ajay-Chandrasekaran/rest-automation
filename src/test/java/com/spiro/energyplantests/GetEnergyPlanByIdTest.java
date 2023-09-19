@@ -20,8 +20,6 @@ import com.spiro.utils.PropertiesReader;
 
 public class GetEnergyPlanByIdTest {
 
-    private final String RESOURCEPATH = "src/test/resources/customerenergyplantests";
-
     @BeforeAll
     public static void setup() throws IOException {
         PropertiesReader propReader = PropertiesReader.getReader();
