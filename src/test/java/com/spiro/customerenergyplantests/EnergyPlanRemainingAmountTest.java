@@ -26,11 +26,10 @@ import com.spiro.helpers.EnergyPlanTestHelper;
 public class EnergyPlanRemainingAmountTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
-    private static PropertiesReader propReader;
 
     @BeforeAll
     public static void setup() throws IOException {
-        propReader = PropertiesReader.getReader();
+        PropertiesReader propReader = PropertiesReader.getReader();
         RestAssured.baseURI = propReader.getHost();
         RestAssured.port = propReader.getPort();
     }
@@ -61,7 +60,7 @@ public class EnergyPlanRemainingAmountTest {
         boolean activationSuccess = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, activateReq);
         assertTrue(activationSuccess, "Energy plan activation failed");
 
-        // validate remaingin amount
+        // validate remaingin amount after assigning plan
         given()
             .pathParam("customer-id", customerId)
         .when()
@@ -75,8 +74,18 @@ public class EnergyPlanRemainingAmountTest {
         Payment payment = ObjectAndJsonUtils.createObjectFromJsonFile(RESOURCEPATH + "create-payment.json", Payment.class);
         payment.setOfferId(energyPlanId);
         payment.setCustomerId(customerId);
+        payment.setSettlementAmount(totalValue);
         boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(RestAssured.baseURI, RestAssured.port, payment);
         assertTrue(paymentSuccess, "Payment failed");
+
+        // validating remaining amout after complete settlement
+        given()
+            .pathParam("customer-id", customerId)
+        .when()
+            .get("customers/energy-plan-remaining-amount/{customer-id}")
+        .then()
+            .statusCode(HttpStatus.SC_OK)
+            .body("response.remainingDueAmount", equalTo(0.0));
 
         // Deactivate energy plan
         boolean deactivationSuccess = EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, customerId);
@@ -84,7 +93,7 @@ public class EnergyPlanRemainingAmountTest {
     }
 
     @Test
-    public void getRemainingAmountForCustomerWithoutPlan() {
+    public void getRemainingAmountForCustomerWithoutPlanTest() {
         String customerId = "1692455325-e43b-4608-8d8a-29458e6dbe69";
 
         given()

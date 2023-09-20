@@ -23,11 +23,10 @@ import com.spiro.utils.PropertiesReader;
 public class EnergyPlanByCountryTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
-    private static PropertiesReader propReader;
 
     @BeforeAll
     public static void setup() throws IOException {
-        propReader = PropertiesReader.getReader();
+        PropertiesReader propReader = PropertiesReader.getReader();
         RestAssured.baseURI = propReader.getHost();
         RestAssured.port = propReader.getPort();
     }
@@ -90,7 +89,7 @@ public class EnergyPlanByCountryTest {
      * Expected: Should return HTTP 400
      */
     @Test
-    public void getEnergyPlanForInvalidCountry() {
+    public void getEnergyPlanForInvalidCountryTest() {
         int customerId = 0;
         int dialCode = 999; // Invalid country code
 
