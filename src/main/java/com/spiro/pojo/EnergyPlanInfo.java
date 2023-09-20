@@ -22,4 +22,5 @@ public class EnergyPlanInfo {
     private int id;
     private String createdBy;
     private EnergyPlanOffer energyPlanOffer;
+    private int status;
 }

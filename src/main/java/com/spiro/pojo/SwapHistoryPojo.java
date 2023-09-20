@@ -1,5 +1,9 @@
 package com.spiro.pojo;
 
+import javax.sound.midi.Track;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -13,6 +17,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SwapHistoryPojo {
 
 	private String transactionId;
