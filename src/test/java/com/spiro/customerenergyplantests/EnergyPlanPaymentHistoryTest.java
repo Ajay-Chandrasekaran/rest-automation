@@ -68,7 +68,7 @@ public class EnergyPlanPaymentHistoryTest {
      */
     @Test
     public void getPaymentHistoryOfValidCustomerTest() throws IOException {
-        String customerId = "1692271624-cb6a-46ff-acec-436240c1dc4d";
+        String customerId = "1683292260-0bf8-4bdf-aad0-5c4fc62cb619";
         int energyPlanId = 260;
         int settlementAmount = 1000;
 
