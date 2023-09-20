@@ -1,11 +1,13 @@
 package com.spiro.customerenergyplantests;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static io.restassured.RestAssured.given;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.UUID;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterAll;
@@ -41,7 +43,7 @@ public class ActivateEnergyPlanForCustomerTest {
     /*
      * [PUT] /customers/energy-plans
      *
-     * Create a new plan and activate if for a customer
+     * Create a new plan and activate it for a customer
      *
      * Expected: Energy plan should be assigned
      */
@@ -87,7 +89,7 @@ public class ActivateEnergyPlanForCustomerTest {
      */
     @Test
     public void activatePlanForInvalidCustomerTest() throws IOException {
-        String customerId = "NO SUCH CUSTOMER";
+        String customerId = UUID.randomUUID().toString();
 
         String startDate = LocalDate.now().toString();
         String endDate = LocalDate.now().plusDays(5).toString();
@@ -150,5 +152,49 @@ public class ActivateEnergyPlanForCustomerTest {
             .statusCode(HttpStatus.SC_BAD_REQUEST)
             .body("success", equalTo(false))
             .body("message", equalTo("Energy Plan which has been availed is not active"));
+    }
+
+    /*
+     * [PUT] /customers/energy-plans
+     *
+     * Create a new plan and activate it for a customer (has a plan already)
+     *
+     * Expected: Energy plan should be assigned
+     */
+    @Test
+    public void activateEnergyPlanForCustomerWithPlanTest() throws IOException {
+        String customerId = "1668424491-a774-4c6b-8248-744324257113";
+
+        String startDate = LocalDate.now().toString();
+        String endDate = LocalDate.now().plusDays(5).toString();
+
+        // Energy plan creation
+        EnergyPlan plan = ObjectAndJsonUtils.createObjectFromJsonFile(RESOURCEPATH + "energy-plan.json", EnergyPlan.class);
+        plan.setStartDate(startDate);
+        plan.setEndDate(endDate);
+        plan.setSwapCount(0);
+        plan.setPlanTotalValue(0);
+
+        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port, plan);
+        assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
+
+        // test plan activation
+        ActivatePlanForCustomer activateReq = new ActivatePlanForCustomer(energyPlanId, customerId);
+        given()
+            .contentType(ContentType.JSON)
+            .body(activateReq)
+        .when()
+            .put("/customers/energy-plans")
+        .then()
+            .statusCode(HttpStatus.SC_CREATED)
+            .body("success", equalTo(true));
+
+        activateReq.setPlanId(260);
+        boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, activateReq);
+        assertFalse(planActivated, "Frist Energy plan activation failed");
+
+        if (!EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, customerId)) {
+            System.err.println("Energy plan(" + energyPlanId + ") deactivation for customer : " + customerId + " Failed");
+        }
     }
 }

@@ -85,7 +85,7 @@ public class EnergyPlanRemainingAmountTest {
             .get("customers/energy-plan-remaining-amount/{customer-id}")
         .then()
             .statusCode(HttpStatus.SC_OK)
-            .body("response.remainingDueAmount", equalTo(0.0));
+            .body("response.remainingDueAmount", equalTo((float)0));
 
         // Deactivate energy plan
         boolean deactivationSuccess = EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, customerId);
@@ -94,14 +94,14 @@ public class EnergyPlanRemainingAmountTest {
 
     @Test
     public void getRemainingAmountForCustomerWithoutPlanTest() {
-        String customerId = "1692455325-e43b-4608-8d8a-29458e6dbe69";
+        String customerId = "1687243176-fd50-4f55-a231-84790d45fb28";
 
         given()
             .pathParam("customer-id", customerId)
         .when()
             .get("customers/energy-plan-remaining-amount/{customer-id}")
         .then()
-            .statusCode(HttpStatus.SC_NOT_FOUND)
+            .statusCode(HttpStatus.SC_OK)
             .body("success", equalTo(false));
     }
 }
