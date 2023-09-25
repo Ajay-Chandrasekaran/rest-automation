@@ -7,8 +7,8 @@
     "offerEmi": 0,
     "emiDate": "2023-10-18",
     "missedEmi": 0,
-    "settlementAmount": 1000,
-    "status": "paid",
+    "settlementAmount": 0,
+    "status": "payment-paid",
     "locationCode": "TG",
     "currency": "XOF",
     "vehicleStatus": "energy_plan"

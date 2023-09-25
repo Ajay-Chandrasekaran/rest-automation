@@ -2,6 +2,7 @@ package com.spiro.entities;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +16,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
+@ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Payment {
     private String lastUpdatedBy;
@@ -22,10 +24,10 @@ public class Payment {
     private String customerId;
     private int offerId;
     private String offerType;
-    private int offerEmi;
+    private float offerEmi;
     private String emiDate;
-    private int settlementAmount;
-    private String status;
+    private float settlementAmount;
+    private String status="payment-paid";
     private String locationCode;
     private String currency;
     private String vehicleStatus;

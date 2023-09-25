@@ -81,8 +81,8 @@ public class CreateEnergyPlansTest {
         String startDate = LocalDate.now().toString();
         String endDate = LocalDate.now().plusDays(5).toString();
 
-        int swapCount = -1; // Invlalid swap count
-        int totalValue = -40; // Invlalid total value
+        int swapCount = -1; // Invalid swap count
+        int totalValue = -40; // Invalid total value
         String locationId = "1686137320-5524-4314-bc0f-9ba65f088a58";
 
         EnergyPlan reqBody = ObjectAndJsonUtils.createObjectFromJsonFile(RESOURCEPATH + "energy-plan.json", EnergyPlan.class);

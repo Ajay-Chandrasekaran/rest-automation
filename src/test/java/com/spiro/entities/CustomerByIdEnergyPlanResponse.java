@@ -1,5 +1,7 @@
 package com.spiro.entities;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -16,16 +18,9 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EnergyPlanResponse {
-    private Integer id;
-    private String customerId;
-    private String startDate;
-    private String endDate;
-    private Integer status;
-    private Integer availedSwaps;
-    private Integer totalAmountPaid;
-    private Integer daysPaid;
-    private Integer missedDays;
-    private Double overdueAmount;
-    private EnergyPlanInfo energyPlanInfo;
+public class CustomerByIdEnergyPlanResponse {
+        private String message;
+        private Boolean success;
+        private Integer status;
+        private EnergyPlanResponse response;
 }

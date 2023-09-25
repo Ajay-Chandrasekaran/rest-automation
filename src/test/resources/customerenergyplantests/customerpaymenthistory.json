@@ -1,5 +1,4 @@
-[
-    {
+{
         "lastUpdatedBy": "ATHENA_PORTAL",
         "createdBy": "ATHENA_PORTAL",
         "customerId": "BJC534910013",
@@ -9,10 +8,10 @@
         "emiDate": "2023-09-12",
         "missedEmi": 0,
         "settlementAmount": 0,
-        "status": "string",
-        "locationCode": "BJ",
+        "status": "payment-paid",
+        "locationCode": "KE",
         "currency": "XOF",
         "vehicleStatus": "active",
         "type": "chap-chap"
-    }
-]
+}
+

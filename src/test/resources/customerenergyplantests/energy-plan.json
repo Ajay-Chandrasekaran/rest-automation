@@ -1,11 +1,11 @@
 {
     "lastUpdatedBy": "ATHENA_PORTAL",
     "createdBy": "ATHENA_PORTAL",
-    "planTotalValue": 2000,
+    "planTotalValue": 5000,
     "planName": "AutoEnergyplan",
     "planCode": "Auto_KENYA_EPLAN",
     "swapCount": 5,
-    "dailyPlanValue": 400,
+    "dailyPlanValue": 193,
     "dialCode": "254",
     "locationId": "1686137320-5524-4314-bc0f-9ba65f088a58",
     "endDate": "2023-10-15",

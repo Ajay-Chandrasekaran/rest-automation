@@ -11,7 +11,10 @@ import java.time.LocalDate;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import io.restassured.RestAssured;
 
@@ -22,6 +25,7 @@ import com.spiro.helpers.EnergyPlanTestHelper;
 import com.spiro.utils.ObjectAndJsonUtils;
 import com.spiro.utils.PropertiesReader;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DeactivateEnergyPlanForCustomerTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
@@ -39,6 +43,7 @@ public class DeactivateEnergyPlanForCustomerTest {
     }
 
     @Test
+    @Order(1)
     public void deactivateEnergyPlanForCustomerTest() throws IOException {
         String customerId = "1682401971-dee5-42b0-8b5b-395870cdea15";
         String startDate = LocalDate.now().toString();
@@ -67,6 +72,7 @@ public class DeactivateEnergyPlanForCustomerTest {
     }
 
     @Test
+    @Order(3)
     public void deactivateEnergyPlanForCustomerWithDueTest() throws IOException {
         String customerId = "1657618561-1597-4dc4-ae35-f48d2f4e45e5";
         String startDate = LocalDate.now().toString();
@@ -107,6 +113,7 @@ public class DeactivateEnergyPlanForCustomerTest {
     }
 
     @Test
+    @Order(2)
     public void deactivateExpiredEnergyPlanTest() throws IOException {
         String customerId = "1635938770-8128-4b26-8e5b-a7ee1b21b2cf";
         String startDate = LocalDate.now().minusDays(5).toString();
