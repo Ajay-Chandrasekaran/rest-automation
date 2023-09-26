@@ -9,6 +9,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
 import com.spiro.entities.ActivatePlanForCustomer;
+import com.spiro.entities.CustomerByIdEnergyPlanResponse;
 import com.spiro.entities.EnergyPlan;
 import com.spiro.entities.Payment;
 import com.spiro.entities.PaymentHistoryList;
@@ -65,7 +66,6 @@ public class EnergyPlanTestHelper {
     public static boolean createPaymentHistory(String host, int port, Payment payment) {
         boolean success = false;
         String URL = host + ":" + port + "/customers/payments/history";
-        System.out.println(payment);
         PaymentHistoryList history = new PaymentHistoryList();
         history.getHistory().add(payment);
 
@@ -80,28 +80,39 @@ public class EnergyPlanTestHelper {
         success = r.jsonPath().getBoolean("[0].success");
         return success;
     }
-    
+
     public static void createSwapHistory(String host,int port,SwapsHistory swap) {
-      boolean success=false;
+
       String URL = host + ":" + port + "/customers/swaps/history";
 
-        SwapHistoryResponse as = 
+        SwapHistoryResponse as =
                 RestAssured.given().accept(ContentType.JSON).contentType("application/json").body(swap)
         .when().post(URL).then().extract().as(SwapHistoryResponse.class);
-        System.out.println("Response "+as);
-    //    return success;
-        
+
+
     }
-    
+
     public static Float getRemainingBalance(String host,int port,String customerId) {
-        
+
         String URL=host+ ":" + port + "/customers/energy-plan-remaining-amount/{customer-id}";
-        
+
      Float remainingBalance = given().accept(ContentType.JSON).pathParam("customer-id", customerId).when().get(URL).then().extract().jsonPath().getFloat("response.remainingDueAmount");
-       
-        
+
+
         return remainingBalance;
-         
+
+    }
+
+    public static CustomerByIdEnergyPlanResponse getCutomerById(String host,int port,String customerId) {
+        String URL=host+ ":" + port + "/customers/{customer-id}/energy-plan";
+
+         CustomerByIdEnergyPlanResponse customerResponse = given()
+                .pathParam("customer-id", customerId)
+            .when()
+                .patch(URL)
+            .then()
+            .extract().as(CustomerByIdEnergyPlanResponse.class);
+         return customerResponse;
     }
 }
 

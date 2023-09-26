@@ -8,8 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.Value;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -34,5 +32,5 @@ public class SwapsHistory {
     private String vehicleNumber;
     private String updatedBy;
     private String locationId;
-    
+
 }
