@@ -170,7 +170,7 @@ public class EnergyPlanSwapHistory {
 
     @Test
     @Order(2)
-    public void swapIneligible() throws IOException, ParseException {
+    public void swapIneligibleAfterDate() throws IOException, ParseException {
 
         int createEnergyPlan = createEnergyPlan();
 
