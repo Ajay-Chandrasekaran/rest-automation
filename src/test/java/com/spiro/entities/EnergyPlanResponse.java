@@ -27,5 +27,7 @@ public class EnergyPlanResponse {
     private Integer daysPaid;
     private Integer missedDays;
     private Double overdueAmount;
+    private String lastUpdatedDate;
     private EnergyPlanInfo energyPlanInfo;
+    
 }

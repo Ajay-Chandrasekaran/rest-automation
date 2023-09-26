@@ -65,6 +65,7 @@ public class EnergyPlanTestHelper {
 
     public static boolean createPaymentHistory(String host, int port, Payment payment) {
         boolean success = false;
+
         String URL = host + ":" + port + "/customers/payments/history";
         PaymentHistoryList history = new PaymentHistoryList();
         history.getHistory().add(payment);
@@ -78,6 +79,7 @@ public class EnergyPlanTestHelper {
             .extract().response();
 
         success = r.jsonPath().getBoolean("[0].success");
+
         return success;
     }
 
@@ -85,7 +87,7 @@ public class EnergyPlanTestHelper {
 
       String URL = host + ":" + port + "/customers/swaps/history";
 
-        SwapHistoryResponse as =
+
                 RestAssured.given().accept(ContentType.JSON).contentType("application/json").body(swap)
         .when().post(URL).then().extract().as(SwapHistoryResponse.class);
 
@@ -104,14 +106,15 @@ public class EnergyPlanTestHelper {
     }
 
     public static CustomerByIdEnergyPlanResponse getCutomerById(String host,int port,String customerId) {
-        String URL=host+ ":" + port + "/customers/{customer-id}/energy-plan";
+        String URL=host+ ":" + port + "/customers/{customer-id}/energy-plans";
 
          CustomerByIdEnergyPlanResponse customerResponse = given()
                 .pathParam("customer-id", customerId)
             .when()
-                .patch(URL)
+                .get(URL)
             .then()
             .extract().as(CustomerByIdEnergyPlanResponse.class);
+    
          return customerResponse;
     }
 }

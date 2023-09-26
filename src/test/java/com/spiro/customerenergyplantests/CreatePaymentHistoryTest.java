@@ -43,6 +43,7 @@ public class CreatePaymentHistoryTest {
             // Activate a plan for customer
             ActivatePlanForCustomer activationReq = new ActivatePlanForCustomer(energyPlanId, customerId);
             boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, activationReq);
+          
             assertTrue(planActivated, "Energy plan activatoin failed for customer: " + customerId);
 
             // Make payment
@@ -51,7 +52,8 @@ public class CreatePaymentHistoryTest {
             payment.setCustomerId(customerId);
             payment.setSettlementAmount(settlementAmount);
             boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(RestAssured.baseURI, RestAssured.port, payment);
-            assertTrue(paymentSuccess, "Payment failed");
+  
+            assertTrue(paymentSuccess, "Payment passed");
         } finally {
             EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, customerId);
         }

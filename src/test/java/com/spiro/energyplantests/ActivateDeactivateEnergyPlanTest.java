@@ -47,7 +47,6 @@ public class ActivateDeactivateEnergyPlanTest {
      */
     @Test
     public void deactivatePlanWithCustomerTest() {
-        // TODO: Find better way to reuse energy plan
         String customerId = "1683292260-0bf8-4bdf-aad0-5c4fc62cb619";
         int energyPlanId = 266;
 

@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -73,7 +74,7 @@ public class EnergyPlanSwapHistory {
     public CustomerByIdEnergyPlanResponse allocateEnergyPlanToCustomer(int id) throws IOException {
         UUID randomUUID = UUID.randomUUID();
         String customerId = String.valueOf(randomUUID);
-        System.out.println(customerId);
+
         ActivatePlanForCustomer customer = new ActivatePlanForCustomer();
         customer.setCustomerId(customerId);
         customer.setPlanId(id);
@@ -84,7 +85,6 @@ public class EnergyPlanSwapHistory {
                 .pathParam("customer-id", customerId).when().get("/customers/{customer-id}/energy-plans").then()
                 .extract().as(CustomerByIdEnergyPlanResponse.class);
 
-        System.out.println(custEnergy.toString());
         return custEnergy;
     }
 
@@ -100,7 +100,7 @@ public class EnergyPlanSwapHistory {
     public void energyplanSwapCount() throws IOException {
 
         int createEnergyPlan = createEnergyPlan();
-        System.out.println("energyplanid1 " + createEnergyPlan);
+
         CustomerByIdEnergyPlanResponse allocateEnergyPlanToCustomer = allocateEnergyPlanToCustomer(createEnergyPlan);
 
         int id = allocateEnergyPlanToCustomer.getResponse().getEnergyPlanInfo().getId();
@@ -113,14 +113,14 @@ public class EnergyPlanSwapHistory {
     }
 
     public void SwapHistory(Integer swapCount, String customerId) throws IOException {
-        System.out.println(swapCount);
+
         SwapsHistory createObjectFromJsonFile = ObjectAndJsonUtils
                 .createObjectFromJsonFile(RESOURCEPATH + "jsonswaphistory.json", SwapsHistory.class);
-        System.out.println("swap " + createObjectFromJsonFile);
+
         for (int i = 0; i < swapCount; i++) {
             createObjectFromJsonFile.setCustomerId(customerId);
             EnergyPlanTestHelper.createSwapHistory(RestAssured.baseURI, RestAssured.port, createObjectFromJsonFile);
-            System.out.println(i);
+
         }
     }
 
@@ -135,10 +135,11 @@ public class EnergyPlanSwapHistory {
         int planAmount = 2600;
         float offerEmi = planAmount / totalDays;
         createObjectFromJsonFile.setOfferEmi(offerEmi);
-        createObjectFromJsonFile.setSettlementAmount(offerEmi);
+//        createObjectFromJsonFile.setSettlementAmount(offerEmi);
 
         for (int i = 0; i < 26; i++) {
             EnergyPlanTestHelper.createPaymentHistory(RestAssured.baseURI, RestAssured.port, createObjectFromJsonFile);
+
         }
 
         Float remainingBalance = EnergyPlanTestHelper.getRemainingBalance(RestAssured.baseURI, RestAssured.port,
@@ -172,46 +173,59 @@ public class EnergyPlanSwapHistory {
     public void swapIneligible() throws IOException, ParseException {
 
         int createEnergyPlan = createEnergyPlan();
-        System.out.println("energyplanid1 " + createEnergyPlan);
+
         CustomerByIdEnergyPlanResponse allocateEnergyPlanToCustomer = allocateEnergyPlanToCustomer(createEnergyPlan);
 
         int id = allocateEnergyPlanToCustomer.getResponse().getEnergyPlanInfo().getId();
         EnergyPlanResponse1 planInfo = RestAssured.given().accept(ContentType.JSON).pathParam("id", id).when()
                 .get("/energy-plans/{id}").then().extract().as(EnergyPlanResponse1.class);
 
-        String endDate = allocateEnergyPlanToCustomer.getResponse().getEndDate();
+        String updatedDate = allocateEnergyPlanToCustomer.getResponse().getLastUpdatedDate();
+
         int swapCount = planInfo.getResponse().getSwapCount();
         String customerId = allocateEnergyPlanToCustomer.getResponse().getCustomerId();
-        SwapHistory(swapCount, customerId,endDate);
+        SwapHistory(swapCount, customerId, updatedDate);
         PaymentHistory(customerId, id);
     }
 
-    public void SwapHistory(Integer swapCount, String customerId,String date) throws IOException, ParseException {
+    public void SwapHistory(Integer swapCount, String customerId, String date) throws IOException, ParseException {
 
-        System.out.println(swapCount);
         SwapsHistory createObjectFromJsonFile = ObjectAndJsonUtils
                 .createObjectFromJsonFile(RESOURCEPATH + "jsonswaphistory.json", SwapsHistory.class);
-        System.out.println("swap " + createObjectFromJsonFile);
+
+        CustomerByIdEnergyPlanResponse customerResponse = EnergyPlanTestHelper.getCutomerById(RestAssured.baseURI,
+                RestAssured.port, customerId);
+
+        String endDate = customerResponse.getResponse().getEndDate();
+        String updatedDate = customerResponse.getResponse().getLastUpdatedDate();
+
+        String updateDate1 = dateTime(updatedDate);
+
         for (int i = 0; i < swapCount; i++) {
-            createObjectFromJsonFile.setCustomerId(customerId);
+            if (endDate.compareTo(updateDate1) > 0)
+
+                createObjectFromJsonFile.setCustomerId(customerId);
             EnergyPlanTestHelper.createSwapHistory(RestAssured.baseURI, RestAssured.port, createObjectFromJsonFile);
-            System.out.println(i);
-            CustomerByIdEnergyPlanResponse customerResponse = EnergyPlanTestHelper.getCutomerById(RestAssured.baseURI,RestAssured.port,customerId);
-            String endDate = customerResponse.getResponse().getEndDate();
-            SimpleDateFormat formatter=new SimpleDateFormat("dd-MMM-yyyy");
-            Date date1=formatter.parse(endDate);
+            SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date3 = outputFormat.parse(updateDate1);
             Calendar instance = Calendar.getInstance();
-            instance.setTime(date1);
-            instance.add(Calendar.DAY_OF_MONTH, 5);
+            instance.setTime(date3);
+            instance.add(Calendar.DAY_OF_MONTH, 10);
+            Date time = instance.getTime();
+            String format = outputFormat.format(time);
+            updateDate1 = format;
         }
     }
 
+    public String dateTime(String date) throws ParseException {
 
-    public void swapInelgibleAfterDate(Integer swapCount, String customerId) {
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-//        EnergyPlanResponse
+        Date inputDate = outputFormat.parse(date);
 
+        String formattedDate = outputFormat.format(inputDate);
 
-
+        return formattedDate;
     }
+
 }
