@@ -29,3 +29,7 @@ target/
 # Eclipse files
 .classpath
 .settings/
+
+# OAuth tokens & credentials
+tokens/
+src/main/resources/credentials.json
