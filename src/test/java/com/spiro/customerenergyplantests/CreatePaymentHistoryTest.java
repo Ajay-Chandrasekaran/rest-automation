@@ -5,33 +5,16 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.IOException;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.Payment;
 import com.spiro.helpers.EnergyPlanTestHelper;
 import com.spiro.utils.ObjectAndJsonUtils;
-import com.spiro.utils.PropertiesReader;
-
-import io.restassured.RestAssured;
 
 public class CreatePaymentHistoryTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
-
-    @BeforeAll
-    public static void setup() throws IOException {
-        PropertiesReader propReader = PropertiesReader.getReader();
-        RestAssured.baseURI = propReader.getHost();
-        RestAssured.port = propReader.getPort();
-    }
-
-    @AfterAll
-    public static void teardown() {
-        RestAssured.reset();
-    }
 
     @Test
     public void createPaymentForValidCustomerTest() throws IOException {
@@ -42,7 +25,7 @@ public class CreatePaymentHistoryTest {
         try {
             // Activate a plan for customer
             ActivatePlanForCustomer activationReq = new ActivatePlanForCustomer(energyPlanId, customerId);
-            boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, activationReq);
+            boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(activationReq);
             assertTrue(planActivated, "Energy plan activatoin failed for customer: " + customerId);
 
             // Make payment
@@ -50,10 +33,10 @@ public class CreatePaymentHistoryTest {
             payment.setOfferId(energyPlanId);
             payment.setCustomerId(customerId);
             payment.setSettlementAmount(settlementAmount);
-            boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(RestAssured.baseURI, RestAssured.port, payment);
+            boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(payment);
             assertTrue(paymentSuccess, "Payment failed");
         } finally {
-            EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, customerId);
+            EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(customerId);
         }
     }
 
@@ -69,7 +52,7 @@ public class CreatePaymentHistoryTest {
         payment.setCustomerId(customerId);
         payment.setSettlementAmount(settlementAmount);
 
-        boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(RestAssured.baseURI, RestAssured.port, payment);
+        boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(payment);
 
         assertFalse(paymentSuccess, "Payment history created for customer without a energy plan");
     }

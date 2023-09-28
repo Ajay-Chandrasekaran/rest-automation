@@ -10,35 +10,19 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.EnergyPlan;
 import com.spiro.helpers.EnergyPlanTestHelper;
 import com.spiro.utils.ObjectAndJsonUtils;
-import com.spiro.utils.PropertiesReader;
 
 
 public class ActivateEnergyPlanForCustomerTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
-
-    @BeforeAll
-    public static void setup() throws IOException {
-        PropertiesReader propReader = PropertiesReader.getReader();
-        RestAssured.baseURI = propReader.getHost();
-        RestAssured.port = propReader.getPort();
-    }
-
-    @AfterAll
-    public static void teardown() {
-        RestAssured.reset();
-    }
 
     /*
      * [PUT] /customers/energy-plans
@@ -61,7 +45,7 @@ public class ActivateEnergyPlanForCustomerTest {
         plan.setSwapCount(0);
         plan.setPlanTotalValue(0);
 
-        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port, plan);
+        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(plan);
         assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
 
         // test plan activation
@@ -75,7 +59,7 @@ public class ActivateEnergyPlanForCustomerTest {
             .statusCode(HttpStatus.SC_CREATED)
             .body("success", equalTo(true));
 
-        if (!EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, customerId)) {
+        if (!EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(customerId)) {
             System.err.println("Energy plan(" + energyPlanId + ") deactivation for customer : " + customerId + " Failed");
         }
     }
@@ -101,7 +85,7 @@ public class ActivateEnergyPlanForCustomerTest {
         plan.setSwapCount(0);
         plan.setPlanTotalValue(0);
 
-        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port, plan);
+        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(plan);
         assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
 
         // test plan activation
@@ -138,7 +122,7 @@ public class ActivateEnergyPlanForCustomerTest {
         plan.setSwapCount(0);
         plan.setPlanTotalValue(0);
 
-        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port, plan);
+        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(plan);
         assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
 
         // test plan activation
@@ -175,7 +159,7 @@ public class ActivateEnergyPlanForCustomerTest {
         plan.setSwapCount(0);
         plan.setPlanTotalValue(0);
 
-        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port, plan);
+        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(plan);
         assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
 
         // test plan activation
@@ -190,10 +174,10 @@ public class ActivateEnergyPlanForCustomerTest {
             .body("success", equalTo(true));
 
         activateReq.setPlanId(260);
-        boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, activateReq);
+        boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(activateReq);
         assertFalse(planActivated, "Frist Energy plan activation failed");
 
-        if (!EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, customerId)) {
+        if (!EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(customerId)) {
             System.err.println("Energy plan(" + energyPlanId + ") deactivation for customer : " + customerId + " Failed");
         }
     }

@@ -10,11 +10,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 import com.spiro.entities.ActivatePlanForCustomer;
@@ -22,23 +19,10 @@ import com.spiro.entities.DeactivateEnergyPlanRequest;
 import com.spiro.entities.EnergyPlan;
 import com.spiro.helpers.EnergyPlanTestHelper;
 import com.spiro.utils.ObjectAndJsonUtils;
-import com.spiro.utils.PropertiesReader;
 
 public class ActivateDeactivateEnergyPlanTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
-
-    @BeforeAll
-    public static void setup() throws IOException {
-        PropertiesReader propReader = PropertiesReader.getReader();
-        RestAssured.baseURI = propReader.getHost();
-        RestAssured.port = propReader.getPort();
-    }
-
-    @AfterAll
-    public static void teardown() {
-        RestAssured.reset();
-    }
 
     /*
      * [PATCH] /energy-plans/{{energy-plan-id}}/status
@@ -54,7 +38,7 @@ public class ActivateDeactivateEnergyPlanTest {
         try {
             // Activate a plan for customer
             ActivatePlanForCustomer activationReq = new ActivatePlanForCustomer(energyPlanId, customerId);
-            boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, activationReq);
+            boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(activationReq);
             assertTrue(planActivated, "Energy plan activatoin failed for customer: " + customerId);
 
             // Test deactivation
@@ -74,7 +58,7 @@ public class ActivateDeactivateEnergyPlanTest {
                 .body("success", equalTo(false))
                 .body("message", startsWith("Energy Plan has not been deactivated"));
         } finally {
-            EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, customerId);
+            EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(customerId);
         }
     }
 
@@ -90,7 +74,7 @@ public class ActivateDeactivateEnergyPlanTest {
         reqBody.setSwapCount(0);
         reqBody.setPlanTotalValue(totalValue);
 
-        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port, reqBody);
+        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(reqBody);
         assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
 
         DeactivateEnergyPlanRequest deactivateReq = new DeactivateEnergyPlanRequest();
@@ -143,7 +127,7 @@ public class ActivateDeactivateEnergyPlanTest {
         reqBody.setSwapCount(0);
         reqBody.setPlanTotalValue(totalValue);
 
-        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port, reqBody);
+        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(reqBody);
         assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
 
         DeactivateEnergyPlanRequest deactivateReq = new DeactivateEnergyPlanRequest();
@@ -175,7 +159,7 @@ public class ActivateDeactivateEnergyPlanTest {
         reqBody.setSwapCount(0);
         reqBody.setPlanTotalValue(totalValue);
 
-        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port, reqBody);
+        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(reqBody);
         assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
 
         DeactivateEnergyPlanRequest deactivateReq = new DeactivateEnergyPlanRequest();
