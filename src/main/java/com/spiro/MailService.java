@@ -1,5 +1,8 @@
 package com.spiro;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Properties;
 
 import jakarta.mail.Message;
@@ -10,7 +13,7 @@ import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 
-public class MailService {
+public final class MailService {
 
     private MailService() {
     }
@@ -41,14 +44,24 @@ public class MailService {
 
             message.setFrom(new InternetAddress(from));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-            message.setSubject("This is the Subject Line!");
-            message.setText("This is actual message");
+            message.setSubject("Energy plan test report");
 
+            String content = parseReportToString();
+            message.setContent(content, "text/html");
             System.out.println("sending...");
             Transport.send(message);
+
             System.out.println("Sent message successfully....");
         } catch (MessagingException mex) {
             mex.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+
+    public static String parseReportToString() throws IOException {
+        final String REPORT = "target/surefire-reports/emailable-report.html";
+
+        return new String(Files.readAllBytes(Path.of(REPORT)));
     }
 }

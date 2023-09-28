@@ -9,35 +9,18 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import io.restassured.RestAssured;
 
 import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.EnergyPlan;
 import com.spiro.entities.Payment;
 import com.spiro.utils.ObjectAndJsonUtils;
-import com.spiro.utils.PropertiesReader;
 import com.spiro.helpers.EnergyPlanTestHelper;
 
 
 public class EnergyPlanRemainingAmountTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
-
-    @BeforeAll
-    public static void setup() throws IOException {
-        PropertiesReader propReader = PropertiesReader.getReader();
-        RestAssured.baseURI = propReader.getHost();
-        RestAssured.port = propReader.getPort();
-    }
-
-    @AfterAll
-    public static void teardown() {
-        RestAssured.reset();
-    }
 
     @Test
     public void getRemainingAmountTest() throws IOException {
@@ -51,13 +34,13 @@ public class EnergyPlanRemainingAmountTest {
         reqBody.setSwapCount(0);
         reqBody.setPlanTotalValue(totalValue);
 
-        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port, reqBody);
+        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(reqBody);
         assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
 
         // activate the new plan for customer
         String customerId = "1683735366-1070-4fa8-bb2e-96687f0778d0";
         ActivatePlanForCustomer activateReq = new ActivatePlanForCustomer(energyPlanId, customerId);
-        boolean activationSuccess = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, activateReq);
+        boolean activationSuccess = EnergyPlanTestHelper.activateEnergyPlanForCustomer(activateReq);
         assertTrue(activationSuccess, "Energy plan activation failed");
 
         // validate remaingin amount after assigning plan
@@ -75,7 +58,7 @@ public class EnergyPlanRemainingAmountTest {
         payment.setOfferId(energyPlanId);
         payment.setCustomerId(customerId);
         payment.setSettlementAmount(totalValue);
-        boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(RestAssured.baseURI, RestAssured.port, payment);
+        boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(payment);
         assertTrue(paymentSuccess, "Payment failed");
 
         // validating remaining amout after complete settlement
@@ -88,7 +71,7 @@ public class EnergyPlanRemainingAmountTest {
             .body("response.remainingDueAmount", equalTo((float)0));
 
         // Deactivate energy plan
-        boolean deactivationSuccess = EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, customerId);
+        boolean deactivationSuccess = EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(customerId);
         assertTrue(deactivationSuccess, "Deactivation of energy plan failed");
     }
 
