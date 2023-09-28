@@ -5,6 +5,8 @@ import static io.restassured.RestAssured.given;
 import java.io.IOException;
 
 import org.apache.http.HttpStatus;
+
+import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
@@ -17,9 +19,6 @@ import com.spiro.utils.PropertiesReader;
 
 public class EnergyPlanTestHelper {
 
-    public static String host;
-    public static int port;
-
     static {
         PropertiesReader prop = null;
 
@@ -30,13 +29,13 @@ public class EnergyPlanTestHelper {
             System.exit(-1);
         }
 
-        EnergyPlanTestHelper.host = prop.getHost();
-        EnergyPlanTestHelper.port = prop.getPort();
+        RestAssured.baseURI = prop.getHost();
+        RestAssured.port = prop.getPort();
     }
 
     public static int createEnergyPlan(EnergyPlan plan) {
         int planId = -1;
-        String URL = EnergyPlanTestHelper.host + ":" + EnergyPlanTestHelper.port + "/energy-plans";
+        String URL = "/energy-plans";
         planId = given()
             .header("Content-Type", ContentType.JSON)
             .body(plan)
@@ -51,7 +50,7 @@ public class EnergyPlanTestHelper {
 
     public static boolean activateEnergyPlanForCustomer(ActivatePlanForCustomer req) {
         boolean success = false;
-        String URL = EnergyPlanTestHelper.host + ":" + EnergyPlanTestHelper.port + "/customers/energy-plans";
+        String URL = "/customers/energy-plans";
 
         success = given()
             .contentType(ContentType.JSON)
@@ -66,7 +65,7 @@ public class EnergyPlanTestHelper {
 
     public static boolean deactivateEnergyPlanForCustomer(String customerId) {
         boolean success = false;
-        String URL = EnergyPlanTestHelper.host + ":" + EnergyPlanTestHelper.port + "/customers/{customer-id}/energy-plans";
+        String URL = "/customers/{customer-id}/energy-plans";
 
         success = given()
             .pathParam("customer-id", customerId)
@@ -80,7 +79,7 @@ public class EnergyPlanTestHelper {
 
     public static boolean createPaymentHistory(Payment payment) {
         boolean success = false;
-        String URL = EnergyPlanTestHelper.host + ":" + EnergyPlanTestHelper.port + "/customers/payments/history";
+        String URL = "/customers/payments/history";
         PaymentHistoryList history = new PaymentHistoryList();
         history.getHistory().add(payment);
 
