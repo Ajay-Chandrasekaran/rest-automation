@@ -11,6 +11,7 @@ public class PropertiesReader {
     private int port;
     private String host;
     private Properties props;
+    private Environment env;
 
     public static PropertiesReader getReader() throws IOException {
         if (reader == null) {
@@ -39,15 +40,21 @@ public class PropertiesReader {
         String landscape = this.props.getProperty("test.landscape");
 
         switch (landscape) {
-            case "uat": {
+            case "UAT": {
                 this.port = Integer.parseInt(this.props.getProperty("uat.port"));
                 this.host = this.props.getProperty("uat.host");
+                this.env = Environment.UAT;
                 break;
             }
             default: {
                 this.port = Integer.parseInt(this.props.getProperty("dev.port"));
                 this.host = this.props.getProperty("dev.host");
+                this.env = Environment.DEV;
             }
         }
+    }
+
+    public Environment getEnv() {
+        return this.env;
     }
 }
