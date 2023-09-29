@@ -54,7 +54,7 @@ public class ActivateDeactivateEnergyPlanTest {
             .when()
                 .patch("/energy-plans/{energy-plan-id}/status")
             .then()
-                .statusCode(HttpStatus.SC_OK) // TODO: Should it be 400 instead ?
+                .statusCode(HttpStatus.SC_OK)
                 .body("success", equalTo(false))
                 .body("message", startsWith("Energy Plan has not been deactivated"));
         } finally {
@@ -89,7 +89,7 @@ public class ActivateDeactivateEnergyPlanTest {
             .when()
                 .patch("/energy-plans/{energy-plan-id}/status")
             .then()
-                .statusCode(HttpStatus.SC_OK) // TODO: Should it be 400 instead ?
+                .statusCode(HttpStatus.SC_OK)
                 .body("success", equalTo(true))
                 .body("message", startsWith("Energy Plan has been deactivated"));
     }
@@ -110,7 +110,7 @@ public class ActivateDeactivateEnergyPlanTest {
         .when()
             .patch("/energy-plans/{energy-plan-id}/status")
         .then()
-            .statusCode(HttpStatus.SC_OK) // TODO: Should it be 400 instead ?
+            .statusCode(HttpStatus.SC_OK)
             .body("success", equalTo(false))
             .body("message", startsWith("Energy Plan does not exist."));
     }
@@ -142,7 +142,7 @@ public class ActivateDeactivateEnergyPlanTest {
         .when()
             .patch("/energy-plans/{energy-plan-id}/status")
         .then()
-            .statusCode(HttpStatus.SC_OK) // TODO: Should it be 400 instead ?
+            .statusCode(HttpStatus.SC_OK)
             .body("success", equalTo(true))
             .body("message", startsWith("Energy Plan has been activated"));
     }
@@ -174,7 +174,7 @@ public class ActivateDeactivateEnergyPlanTest {
         .when()
             .patch("/energy-plans/{energy-plan-id}/status")
         .then()
-            .statusCode(HttpStatus.SC_OK) // TODO: Should it be 400 instead ?
+            .statusCode(HttpStatus.SC_OK)
             .body("success", equalTo(true));
 
         deactivateReq.setStatus(0);
