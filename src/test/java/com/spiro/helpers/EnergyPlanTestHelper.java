@@ -2,11 +2,8 @@ package com.spiro.helpers;
 
 import static io.restassured.RestAssured.given;
 
-import java.io.IOException;
-
 import org.apache.http.HttpStatus;
 
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
@@ -14,33 +11,9 @@ import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.EnergyPlan;
 import com.spiro.entities.Payment;
 import com.spiro.entities.PaymentHistoryList;
-import com.spiro.utils.CsvUtils;
-import com.spiro.utils.PropertiesReader;
 
 
 public class EnergyPlanTestHelper {
-
-    // TODO: Move this code out of static block
-    static {
-        PropertiesReader prop = null;
-
-        try {
-            prop = PropertiesReader.getReader();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-
-        RestAssured.baseURI = prop.getHost();
-        RestAssured.port = prop.getPort();
-
-        try {
-            CsvUtils.loadCustomers(prop.getEnv());
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-    }
 
     public static int createEnergyPlan(EnergyPlan plan) {
         int planId = -1;

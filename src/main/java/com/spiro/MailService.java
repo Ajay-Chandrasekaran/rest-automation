@@ -59,7 +59,7 @@ public final class MailService {
         }
     }
 
-    public static String parseReportToString() throws IOException {
+    private static String parseReportToString() throws IOException {
         final String REPORT = "target/surefire-reports/emailable-report.html";
 
         return new String(Files.readAllBytes(Path.of(REPORT)));
