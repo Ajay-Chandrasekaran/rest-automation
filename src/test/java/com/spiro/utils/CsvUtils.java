@@ -10,7 +10,7 @@ import com.opencsv.CSVReader;
 
 public class CsvUtils {
     private static Iterator<String[]> customers = null;
-    private static final String UAT_CSV = "src/test/resources/csv/dev_customers.csv";
+    private static final String UAT_CSV = "src/test/resources/csv/uat_customers.csv";
     private static final String DEV_CSV = "src/test/resources/csv/dev_customers.csv";
 
     /**

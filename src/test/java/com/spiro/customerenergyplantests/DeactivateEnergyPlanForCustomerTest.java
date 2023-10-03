@@ -9,21 +9,28 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.EnergyPlan;
 import com.spiro.entities.Payment;
 import com.spiro.helpers.EnergyPlanTestHelper;
+import com.spiro.utils.CsvUtils;
 import com.spiro.utils.ObjectAndJsonUtils;
 
 public class DeactivateEnergyPlanForCustomerTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
 
+    @BeforeAll
+    public static void setup() throws IOException {
+        EnergyPlanTestHelper.init();
+    }
+
     @Test
     public void deactivateEnergyPlanForCustomerTest() throws IOException {
-        String customerId = "1682401971-dee5-42b0-8b5b-395870cdea15";
+        String customerId = CsvUtils.getNextCustomer();
         String startDate = LocalDate.now().toString();
         String endDate = LocalDate.now().plusDays(5).toString();
 
@@ -51,7 +58,7 @@ public class DeactivateEnergyPlanForCustomerTest {
 
     @Test
     public void deactivateEnergyPlanForCustomerWithDueTest() throws IOException {
-        String customerId = "1657618561-1597-4dc4-ae35-f48d2f4e45e5";
+        String customerId = CsvUtils.getNextCustomer();
         String startDate = LocalDate.now().toString();
         String endDate = LocalDate.now().plusDays(5).toString();
         int totalValue = 1000;
@@ -91,7 +98,7 @@ public class DeactivateEnergyPlanForCustomerTest {
 
     @Test
     public void deactivateExpiredEnergyPlanTest() throws IOException {
-        String customerId = "1635938770-8128-4b26-8e5b-a7ee1b21b2cf";
+        String customerId = CsvUtils.getNextCustomer();
         String startDate = LocalDate.now().minusDays(5).toString();
         String endDate = LocalDate.now().minusDays(3).toString();
         int totalValue = 0;

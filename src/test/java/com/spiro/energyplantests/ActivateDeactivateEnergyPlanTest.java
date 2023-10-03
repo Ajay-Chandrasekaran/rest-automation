@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.http.ContentType;
@@ -18,11 +19,17 @@ import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.DeactivateEnergyPlanRequest;
 import com.spiro.entities.EnergyPlan;
 import com.spiro.helpers.EnergyPlanTestHelper;
+import com.spiro.utils.CsvUtils;
 import com.spiro.utils.ObjectAndJsonUtils;
 
 public class ActivateDeactivateEnergyPlanTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
+
+    @BeforeAll
+    public static void setup() {
+        EnergyPlanTestHelper.init();
+    }
 
     /*
      * [PATCH] /energy-plans/{{energy-plan-id}}/status
@@ -32,7 +39,7 @@ public class ActivateDeactivateEnergyPlanTest {
     @Test
     public void deactivatePlanWithCustomerTest() {
         // TODO: Find better way to reuse energy plan
-        String customerId = "1683292260-0bf8-4bdf-aad0-5c4fc62cb619";
+        String customerId = CsvUtils.getNextCustomer();
         int energyPlanId = 266;
 
         try {

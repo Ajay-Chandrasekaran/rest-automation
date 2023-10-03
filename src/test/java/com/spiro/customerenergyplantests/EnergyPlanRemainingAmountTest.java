@@ -9,11 +9,13 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.EnergyPlan;
 import com.spiro.entities.Payment;
+import com.spiro.utils.CsvUtils;
 import com.spiro.utils.ObjectAndJsonUtils;
 import com.spiro.helpers.EnergyPlanTestHelper;
 
@@ -21,6 +23,11 @@ import com.spiro.helpers.EnergyPlanTestHelper;
 public class EnergyPlanRemainingAmountTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
+
+    @BeforeAll
+    public static void setup() throws IOException {
+        EnergyPlanTestHelper.init();
+    }
 
     @Test
     public void getRemainingAmountTest() throws IOException {
@@ -38,7 +45,7 @@ public class EnergyPlanRemainingAmountTest {
         assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
 
         // activate the new plan for customer
-        String customerId = "1683735366-1070-4fa8-bb2e-96687f0778d0";
+        String customerId = CsvUtils.getNextCustomer();
         ActivatePlanForCustomer activateReq = new ActivatePlanForCustomer(energyPlanId, customerId);
         boolean activationSuccess = EnergyPlanTestHelper.activateEnergyPlanForCustomer(activateReq);
         assertTrue(activationSuccess, "Energy plan activation failed");
@@ -77,7 +84,7 @@ public class EnergyPlanRemainingAmountTest {
 
     @Test
     public void getRemainingAmountForCustomerWithoutPlanTest() {
-        String customerId = "1687243176-fd50-4f55-a231-84790d45fb28";
+        String customerId = CsvUtils.getNextCustomer();
 
         given()
             .pathParam("customer-id", customerId)

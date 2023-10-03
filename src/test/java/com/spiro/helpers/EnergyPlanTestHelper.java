@@ -103,4 +103,6 @@ public class EnergyPlanTestHelper {
         success = r.jsonPath().getBoolean("[0].success");
         return success;
     }
+
+    public static void init() {}
 }

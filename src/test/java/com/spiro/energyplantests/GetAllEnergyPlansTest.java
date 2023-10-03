@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
 
-import com.spiro.utils.PropertiesReader;
+import com.spiro.helpers.EnergyPlanTestHelper;
 
 
 public class GetAllEnergyPlansTest {
@@ -22,9 +22,7 @@ public class GetAllEnergyPlansTest {
 
     @BeforeAll
     public static void setup() throws IOException {
-        PropertiesReader propReader = PropertiesReader.getReader();
-        RestAssured.baseURI = propReader.getHost();
-        RestAssured.port = propReader.getPort();
+        EnergyPlanTestHelper.init();
     }
 
     @AfterAll

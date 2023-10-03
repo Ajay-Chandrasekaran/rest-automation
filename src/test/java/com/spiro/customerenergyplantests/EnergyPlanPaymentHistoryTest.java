@@ -8,17 +8,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.Payment;
 import com.spiro.helpers.EnergyPlanTestHelper;
+import com.spiro.utils.CsvUtils;
 import com.spiro.utils.ObjectAndJsonUtils;
 
 
 public class EnergyPlanPaymentHistoryTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
+
+    @BeforeAll
+    public static void setup() throws IOException {
+        EnergyPlanTestHelper.init();
+    }
 
     /**
      * [GET] customers/payment-history/{customer-id}
@@ -29,7 +36,7 @@ public class EnergyPlanPaymentHistoryTest {
      */
     @Test
     public void getPaymentHistoryOfInvalidCustomerTest() {
-        String customerId = "1692455325-e43b-4608-8d8a-29458e6dbe69";
+        String customerId = CsvUtils.getNextCustomer();
 
         given()
             .pathParam("customer-id", customerId)
@@ -50,7 +57,7 @@ public class EnergyPlanPaymentHistoryTest {
      */
     // @Test
     public void getPaymentHistoryOfValidCustomerTest() throws IOException {
-        String customerId = "1683292260-0bf8-4bdf-aad0-5c4fc62cb619";
+        String customerId = CsvUtils.getNextCustomer();
         int energyPlanId = 260;
         int settlementAmount = 1000;
 
