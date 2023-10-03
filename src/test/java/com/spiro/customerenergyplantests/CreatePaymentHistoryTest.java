@@ -1,12 +1,12 @@
 package com.spiro.customerenergyplantests;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertFalse;
 
 import java.io.IOException;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.Payment;
@@ -18,7 +18,7 @@ public class CreatePaymentHistoryTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
 
-    @BeforeAll
+    @BeforeClass
     public static void setup() throws IOException {
         EnergyPlanTestHelper.init();
     }

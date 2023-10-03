@@ -2,14 +2,14 @@ package com.spiro.customerenergyplantests;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertEquals;
 
 import java.io.IOException;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.Payment;
@@ -22,7 +22,7 @@ public class EnergyPlanPaymentHistoryTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
 
-    @BeforeAll
+    @BeforeClass
     public static void setup() throws IOException {
         EnergyPlanTestHelper.init();
     }

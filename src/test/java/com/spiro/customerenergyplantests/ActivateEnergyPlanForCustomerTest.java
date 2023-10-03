@@ -1,7 +1,7 @@
 package com.spiro.customerenergyplantests;
 
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotEquals;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static io.restassured.RestAssured.given;
 
@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import io.restassured.http.ContentType;
 
@@ -25,7 +25,7 @@ public class ActivateEnergyPlanForCustomerTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
 
-    @BeforeAll
+    @BeforeClass
     public static void setup() throws IOException {
         EnergyPlanTestHelper.init();
     }
