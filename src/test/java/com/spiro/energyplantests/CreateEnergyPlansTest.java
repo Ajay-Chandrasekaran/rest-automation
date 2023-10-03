@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -24,12 +24,12 @@ public class CreateEnergyPlansTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
 
-    @BeforeAll
+    @BeforeClass
     public static void setup() throws IOException {
         EnergyPlanTestHelper.init();
     }
 
-    @AfterAll
+    @AfterClass
     public static void teardown() {
         RestAssured.reset();
     }

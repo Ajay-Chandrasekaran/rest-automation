@@ -7,9 +7,9 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import java.io.IOException;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import io.restassured.RestAssured;
 
@@ -18,14 +18,14 @@ import com.spiro.utils.CsvUtils;
 
 public class EnergyPlanByCustomerTest {
 
-    @BeforeAll
+    @BeforeClass
     public static void setup() throws IOException {
 
         EnergyPlanTestHelper.init();
         RestAssured.basePath = "/customers";
     }
 
-    @AfterAll
+    @AfterClass
     public static void teardown() {
         RestAssured.reset();
     }
