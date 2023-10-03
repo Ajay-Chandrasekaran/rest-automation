@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<suite name="EnergyPlan" verbose="1">
+    <test name="setup">
+        <classes>
+            <class name="com.spiro.SetupTest" />
+        </classes>
+    </test>
+    <test name="CustomerEnergyPlan">
+        <packages>
+            <package name="com.spiro.customerenergyplantests" />
+        </packages>
+    </test>
+    <test name="EnergyPlanTests">
+        <packages>
+            <package name="com.spiro.energyplantests" />
+        </packages>
+    </test>
+</suite>
