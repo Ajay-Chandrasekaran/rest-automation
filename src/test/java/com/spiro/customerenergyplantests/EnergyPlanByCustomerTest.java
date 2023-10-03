@@ -13,17 +13,15 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
 
-import com.spiro.utils.PropertiesReader;
+import com.spiro.helpers.EnergyPlanTestHelper;
+import com.spiro.utils.CsvUtils;
 
 public class EnergyPlanByCustomerTest {
 
-    private static PropertiesReader propReader;
-
     @BeforeAll
     public static void setup() throws IOException {
-        propReader = PropertiesReader.getReader();
-        RestAssured.baseURI = propReader.getHost();
-        RestAssured.port = propReader.getPort();
+
+        EnergyPlanTestHelper.init();
         RestAssured.basePath = "/customers";
     }
 
@@ -56,7 +54,7 @@ public class EnergyPlanByCustomerTest {
      */
     @Test
     public void customerWithoutEnergyPlanTest() {
-        String customerId = "1692701797-5e8a-4845-afba-06078001c492";
+        String customerId = CsvUtils.getNextCustomer();
 
         given()
             .pathParam("customer-id", customerId)
@@ -75,7 +73,7 @@ public class EnergyPlanByCustomerTest {
      */
     @Test
     public void customerWithEnergyPlanTest() {
-        String customerId = "1692211922-b51c-470f-89ae-16d4209123a8";
+        String customerId = CsvUtils.getNextCustomer();
 
         given()
             .pathParam("customer-id", customerId)

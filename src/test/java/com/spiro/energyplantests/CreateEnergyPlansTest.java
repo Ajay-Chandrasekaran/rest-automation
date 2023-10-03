@@ -16,8 +16,8 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 import com.spiro.entities.EnergyPlan;
+import com.spiro.helpers.EnergyPlanTestHelper;
 import com.spiro.utils.ObjectAndJsonUtils;
-import com.spiro.utils.PropertiesReader;
 
 
 public class CreateEnergyPlansTest {
@@ -26,9 +26,7 @@ public class CreateEnergyPlansTest {
 
     @BeforeAll
     public static void setup() throws IOException {
-        PropertiesReader propReader = PropertiesReader.getReader();
-        RestAssured.baseURI = propReader.getHost();
-        RestAssured.port = propReader.getPort();
+        EnergyPlanTestHelper.init();
     }
 
     @AfterAll

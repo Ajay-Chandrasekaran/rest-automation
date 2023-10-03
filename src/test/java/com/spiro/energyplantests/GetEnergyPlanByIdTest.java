@@ -15,16 +15,14 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 import com.spiro.entities.EnergyPlan;
-import com.spiro.utils.PropertiesReader;
+import com.spiro.helpers.EnergyPlanTestHelper;
 
 
 public class GetEnergyPlanByIdTest {
 
     @BeforeAll
     public static void setup() throws IOException {
-        PropertiesReader propReader = PropertiesReader.getReader();
-        RestAssured.baseURI = propReader.getHost();
-        RestAssured.port = propReader.getPort();
+        EnergyPlanTestHelper.init();
     }
 
     @AfterAll

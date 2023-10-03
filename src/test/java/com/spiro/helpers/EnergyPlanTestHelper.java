@@ -14,11 +14,13 @@ import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.EnergyPlan;
 import com.spiro.entities.Payment;
 import com.spiro.entities.PaymentHistoryList;
+import com.spiro.utils.CsvUtils;
 import com.spiro.utils.PropertiesReader;
 
 
 public class EnergyPlanTestHelper {
 
+    // TODO: Move this code out of static block
     static {
         PropertiesReader prop = null;
 
@@ -31,6 +33,13 @@ public class EnergyPlanTestHelper {
 
         RestAssured.baseURI = prop.getHost();
         RestAssured.port = prop.getPort();
+
+        try {
+            CsvUtils.loadCustomers(prop.getEnv());
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(-1);
+        }
     }
 
     public static int createEnergyPlan(EnergyPlan plan) {
@@ -94,4 +103,6 @@ public class EnergyPlanTestHelper {
         success = r.jsonPath().getBoolean("[0].success");
         return success;
     }
+
+    public static void init() {}
 }

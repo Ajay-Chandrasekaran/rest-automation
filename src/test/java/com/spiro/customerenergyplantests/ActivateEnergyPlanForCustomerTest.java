@@ -7,9 +7,9 @@ import static io.restassured.RestAssured.given;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.UUID;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.http.ContentType;
@@ -17,12 +17,18 @@ import io.restassured.http.ContentType;
 import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.EnergyPlan;
 import com.spiro.helpers.EnergyPlanTestHelper;
+import com.spiro.utils.CsvUtils;
 import com.spiro.utils.ObjectAndJsonUtils;
 
 
 public class ActivateEnergyPlanForCustomerTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
+
+    @BeforeAll
+    public static void setup() throws IOException {
+        EnergyPlanTestHelper.init();
+    }
 
     /*
      * [PUT] /customers/energy-plans
@@ -33,8 +39,7 @@ public class ActivateEnergyPlanForCustomerTest {
      */
     @Test
     public void activateEnergyPlanForCustomerTest() throws IOException {
-        String customerId = "1690361168-39e5-4fcc-9335-3f2207507c64";
-
+        String customerId = CsvUtils.getNextCustomer();
         String startDate = LocalDate.now().toString();
         String endDate = LocalDate.now().plusDays(5).toString();
 
@@ -73,8 +78,7 @@ public class ActivateEnergyPlanForCustomerTest {
      */
     @Test
     public void activatePlanForInvalidCustomerTest() throws IOException {
-        String customerId = UUID.randomUUID().toString();
-
+        String customerId = CsvUtils.getNextCustomer();
         String startDate = LocalDate.now().toString();
         String endDate = LocalDate.now().plusDays(5).toString();
 
@@ -109,7 +113,7 @@ public class ActivateEnergyPlanForCustomerTest {
      */
     @Test
     public void assignNonActivePlanForCustomerTest() throws IOException {
-        String customerId = "1690361168-0000-4fcc-9335-3f2207507c64";
+        String customerId = CsvUtils.getNextCustomer();
 
         // Start and end date are in future to the status will be "yet to start" (Non active)
         String startDate = LocalDate.now().plusDays(10).toString();
@@ -147,8 +151,7 @@ public class ActivateEnergyPlanForCustomerTest {
      */
     @Test
     public void activateEnergyPlanForCustomerWithPlanTest() throws IOException {
-        String customerId = "1668424491-a774-4c6b-8248-744324257113";
-
+        String customerId = CsvUtils.getNextCustomer();
         String startDate = LocalDate.now().toString();
         String endDate = LocalDate.now().plusDays(5).toString();
 
