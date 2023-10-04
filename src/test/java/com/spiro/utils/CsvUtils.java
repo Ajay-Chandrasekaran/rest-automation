@@ -1,6 +1,10 @@
 package com.spiro.utils;
 
 import java.util.Iterator;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,6 +16,7 @@ public class CsvUtils {
     private static Iterator<String[]> customers = null;
     private static final String UAT_CSV = "src/test/resources/csv/uat_customers.csv";
     private static final String DEV_CSV = "src/test/resources/csv/dev_customers.csv";
+    private static final Logger logger = LogManager.getLogger();
 
     /**
      * @param env Testing environment.
@@ -20,9 +25,11 @@ public class CsvUtils {
     public static void loadCustomers(Environment env) throws Exception {
         String path = (Environment.UAT == env)? UAT_CSV : DEV_CSV;
 
+        logger.info("Reading csv {}", path);
         try (Reader reader = Files.newBufferedReader(Path.of(path))) {
             try (CSVReader csvReader = new CSVReader(reader)) {
                 CsvUtils.customers = csvReader.readAll().iterator();
+                logger.info("Reading customer csv complete.");
             }
         }
     }

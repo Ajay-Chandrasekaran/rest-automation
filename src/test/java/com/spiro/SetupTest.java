@@ -2,15 +2,19 @@ package com.spiro;
 
 import java.io.IOException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.testng.annotations.BeforeSuite;
+
+import io.restassured.RestAssured;
 
 import com.spiro.utils.CsvUtils;
 import com.spiro.utils.PropertiesReader;
 
-import io.restassured.RestAssured;
-
 
 public class SetupTest {
+
+    private static final Logger logger = LogManager.getLogger();
 
     /**
      * Load properties and data required for running tests.
@@ -18,14 +22,14 @@ public class SetupTest {
      */
     @BeforeSuite
     public void setup() {
-        System.out.println("Running Test setup...");
+        logger.info("Setting up tests.");
 
         PropertiesReader prop = null;
 
         try {
             prop = PropertiesReader.getReader();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.fatal(e.getMessage(), e);
             System.exit(-1);
         }
 
@@ -35,10 +39,10 @@ public class SetupTest {
         try {
             CsvUtils.loadCustomers(prop.getEnv());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.fatal(e.getMessage(), e);
             System.exit(-1);
         }
 
-        System.out.println("Setup Done!");
+        logger.info("Setup completed.");
     }
 }
