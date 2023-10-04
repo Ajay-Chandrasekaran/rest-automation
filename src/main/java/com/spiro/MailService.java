@@ -5,6 +5,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.PasswordAuthentication;
@@ -15,11 +18,13 @@ import jakarta.mail.internet.MimeMessage;
 
 public final class MailService {
 
+    private static final Logger logger = LogManager.getLogger();
+
     private MailService() {
     }
 
     public static void sendMail() {
-        final String to = "";
+        final String to = "wow";
         final String from = "integration.test.runner@gmail.com";
         final String username = from.split("@")[0];
         final String pwd = "";
@@ -38,6 +43,7 @@ public final class MailService {
                 return new PasswordAuthentication(username, pwd);
             }
         });
+        logger.info("Seding email to {}", to);
 
         try {
             MimeMessage message = new MimeMessage(session);
@@ -48,14 +54,14 @@ public final class MailService {
 
             String content = parseReportToString();
             message.setContent(content, "text/html");
-            System.out.println("sending...");
-            Transport.send(message);
+            logger.info("Email message created.");
 
-            System.out.println("Sent message successfully....");
+            Transport.send(message);
+            logger.info("Sent message successfully.");
         } catch (MessagingException mex) {
-            mex.printStackTrace();
+            logger.error(mex.getMessage(), mex);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 
