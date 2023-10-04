@@ -18,14 +18,14 @@ public class PropertiesReader {
         }
         return reader;
     }
-
+    
     private PropertiesReader() throws IOException {
         FileInputStream file = new FileInputStream(PATH);
         this.props = new Properties();
         this.props.load(file);
         file.close();
         setEnv();
-    }
+    }    
 
     public int getPort() {
         return port;
