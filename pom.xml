@@ -65,28 +65,10 @@
             <version>1.18.28</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-surefire-report-plugin</artifactId>
-    <version>3.1.2</version>
-</dependency>
-
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.1.2</version>
-                <executions>
-                    <execution>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>

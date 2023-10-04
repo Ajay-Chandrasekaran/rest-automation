@@ -108,6 +108,7 @@ public class EnergyPlanSwapHistory {
                 .get("/energy-plans/{id}").then().extract().as(EnergyPlanResponse1.class);
         int swapCount = planInfo.getResponse().getSwapCount();
         String customerId = allocateEnergyPlanToCustomer.getResponse().getCustomerId();
+        System.out.println(customerId);
         SwapHistory(swapCount, customerId);
         PaymentHistory(customerId, id);
     }
@@ -142,7 +143,7 @@ public class EnergyPlanSwapHistory {
 
         }
 
-        Float remainingBalance = EnergyPlanTestHelper.getRemainingBalance(RestAssured.baseURI, RestAssured.port,
+        float remainingBalance = EnergyPlanTestHelper.getRemainingBalance(RestAssured.baseURI, RestAssured.port,
                 customerId);
 
         if (remainingBalance == 0) {
@@ -150,7 +151,6 @@ public class EnergyPlanSwapHistory {
         } else {
             deactiveCustomerEnergyPlanFail(customerId);
         }
-
     }
 
     public void deactivateCustomerEnergyPlan(String customerId) {
