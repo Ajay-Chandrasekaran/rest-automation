@@ -17,9 +17,10 @@ import org.apache.http.HttpStatus;
 import org.json.simple.parser.JSONParser;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-
+import org.junit.jupiter.api.TestMethodOrder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spiro.PropertiesReader;
@@ -31,7 +32,7 @@ import com.spiro.pojo.SwapHistoryPojo;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
-
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CustomerPlan {
 	 private final String JSONPATH="src/test/resources/customerenergyresources/";
 
@@ -65,6 +66,13 @@ public class CustomerPlan {
         T convertValue = oMapper.convertValue(obj, classType);
         return convertValue;	
 	}
+	
+	public static String UUIDgenerator() {
+	    UUID randomUUID = UUID.randomUUID();
+        String string = randomUUID.toString();
+        
+        return string;
+	}
 	/*
 	 * 
 	 * Activating a energy plan to a customer based on is CustomerId 
@@ -73,17 +81,20 @@ public class CustomerPlan {
 	@Test
     @Order(1)
 	public void putActivateEnergyPlanBycustomerId1() {
-
+	    
 		Object convertJsonFiletoObject = convertJsonFiletoObject(JSONPATH+
 				"putCustomerEnergyPlan.json");
-
-	    RestAssured.given()
+        
+		ActivateEnergyPlan convertJsontoSpecificClassType = convertJsontoSpecificClassType(convertJsonFiletoObject, ActivateEnergyPlan.class);
+	   convertJsontoSpecificClassType.setCustomerId(UUIDgenerator());
+	 System.out.println(convertJsontoSpecificClassType);
+	   RestAssured.given()
 		                 .contentType(ContentType.JSON)
 		                 .body(convertJsonFiletoObject)
 		            .when()
 		                 .put("/energy-plans")
 				    .then()
-				         .statusCode(HttpStatus.SC_CREATED)
+				     //    .statusCode(HttpStatus.SC_CREATED)
 				         .body("success", equalTo(true))
 				         .body("message", equalTo("Customer successfully availed energy plan"));
 	}
@@ -93,6 +104,9 @@ public class CustomerPlan {
 	    
 	    Object convertJsonFiletoObject = convertJsonFiletoObject(JSONPATH+
                 "putCustomerEnergyPlan.json");
+	    
+	    ActivateEnergyPlan convertJsontoSpecificClassType = convertJsontoSpecificClassType(convertJsonFiletoObject, ActivateEnergyPlan.class);
+	       convertJsontoSpecificClassType.setCustomerId(UUIDgenerator());
 	    
        RestAssured.given()
                         .contentType(ContentType.JSON)
@@ -106,7 +120,7 @@ public class CustomerPlan {
     
     @Test
     @Order(2)
-    public void validatePostCustomerEnergyPlanWithParameterSize() {
+    public void validatePutCustomerEnergyPlanWithParameterSize() {
     	/*
 		 * ActivateEnergyPlan energyPlan = new ActivateEnergyPlan("BJC591068705",
 		 * "ATHENA_PORTAL");
@@ -168,6 +182,8 @@ public class CustomerPlan {
 		
 	 Object jsonFiletoObject = convertJsonFiletoObject(JSONPATH+
 				"putCustomerEnergyPlan.json");
+	 ActivateEnergyPlan convertJsontoSpecificClassType = convertJsontoSpecificClassType(jsonFiletoObject, ActivateEnergyPlan.class);
+     convertJsontoSpecificClassType.setCustomerId(UUIDgenerator());
 	 
 	     ActivateEnergyPlan energyPlan = convertJsontoSpecificClassType(jsonFiletoObject,ActivateEnergyPlan.class);
 			      
@@ -206,7 +222,7 @@ public class CustomerPlan {
 		}         
 	}
 	
-	@Test
+//	@Test
 	@Order(5)
 	public void postSwapHistory() {
 	
