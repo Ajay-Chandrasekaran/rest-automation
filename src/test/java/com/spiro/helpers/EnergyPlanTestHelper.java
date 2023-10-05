@@ -11,70 +11,90 @@ import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.EnergyPlan;
 import com.spiro.entities.Payment;
 import com.spiro.entities.PaymentHistoryList;
+import com.spiro.entities.SwapHistory;
 
 
 public class EnergyPlanTestHelper {
 
-    public static int createEnergyPlan(EnergyPlan plan) {
-        int planId = -1;
+    public static Response createEnergyPlan(EnergyPlan plan) {
         String URL = "/energy-plans";
-        planId = given()
+
+        return given()
             .header("Content-Type", ContentType.JSON)
             .body(plan)
         .when()
             .post(URL)
         .then()
             .statusCode(HttpStatus.SC_CREATED)
-        .extract().path("response.id");
-
-        return planId;
+        .extract().response();
     }
 
-    public static boolean activateEnergyPlanForCustomer(ActivatePlanForCustomer req) {
-        boolean success = false;
+    public static Response activateEnergyPlanForCustomer(ActivatePlanForCustomer req) {
         String URL = "/customers/energy-plans";
 
-        success = given()
+        return given()
             .contentType(ContentType.JSON)
             .body(req)
         .when()
             .put(URL)
-        .then()
-        .extract().jsonPath().getBoolean("success");
-
-        return success;
+        .then().extract().response();
     }
 
-    public static boolean deactivateEnergyPlanForCustomer(String customerId) {
-        boolean success = false;
+    public static Response deactivateEnergyPlanForCustomer(String customerId) {
         String URL = "/customers/{customer-id}/energy-plans";
 
-        success = given()
+        return given()
             .pathParam("customer-id", customerId)
         .when()
             .patch(URL)
-        .then()
-        .extract().jsonPath().getBoolean("success");
-
-        return success;
+        .then().extract().response();
     }
 
-    public static boolean createPaymentHistory(Payment payment) {
-        boolean success = false;
+    public static Response createPaymentHistory(Payment payment) {
         String URL = "/customers/payments/history";
+
         PaymentHistoryList history = new PaymentHistoryList();
         history.getHistory().add(payment);
 
-        Response r = given()
+        return given()
             .body(history.getHistory())
             .contentType(ContentType.JSON)
         .when()
             .post(URL)
-        .then()
-            .extract().response();
+        .then().extract().response();
+    }
 
-        success = r.jsonPath().getBoolean("[0].success");
-        return success;
+    public static Response createSwapHistory(SwapHistory swap) {
+        String URL = "/customers/swaps/history";
+
+        return given()
+            .accept(ContentType.JSON)
+            .contentType("application/json")
+            .body(swap)
+        .when()
+            .post(URL)
+        .then().extract().response();
+    }
+
+    public static Response getRemainingBalance(String host,int port,String customerId) {
+        String URL = "/customers/{customer-id}/energy-plan-remaining-amount/";
+
+        return given()
+            .accept(ContentType.JSON)
+            .pathParam("customer-id", customerId)
+        .when()
+            .get(URL)
+        .then().extract().response();
+    }
+
+    public static Response getCutomerById(String customerId) {
+        String URL = "/customers/{customer-id}/energy-plans";
+
+        return given()
+            .pathParam("customer-id", customerId)
+        .when()
+            .get(URL)
+        .then().extract().response();
     }
 
     public static void init() {}
