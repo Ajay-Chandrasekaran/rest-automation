@@ -7,28 +7,12 @@ import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInC
 import java.io.IOException;
 
 import org.apache.http.HttpStatus;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import io.restassured.RestAssured;
-
-import com.spiro.helpers.EnergyPlanTestHelper;
 
 
 public class GetAllEnergyPlansTest {
 
     private final String SCHEMAPATH = "jsonschemas/";
-
-    @BeforeClass
-    public static void setup() throws IOException {
-        EnergyPlanTestHelper.init();
-    }
-
-    @AfterClass
-    public static void teardown() {
-        RestAssured.reset();
-    }
 
     /**
      * [GET] /energy-plans
