@@ -61,8 +61,8 @@ public class CreatePaymentHistoryTest {
     @Test
     public void createPaymentForCustomerWithoutPlanTest() throws IOException {
         String customerId = ObjectAndJsonUtils.UUIDgenerator();
-        int energyPlanId = 260;
-        int settlementAmount = 1000;
+        int energyPlanId = 1010;
+        int settlementAmount = 5000;
 
         // Make payment
         Payment payment = ObjectAndJsonUtils.createObjectFromJsonFile(RESOURCEPATH + "create-payment.json", Payment.class);
@@ -71,7 +71,7 @@ public class CreatePaymentHistoryTest {
         payment.setSettlementAmount(settlementAmount);
 
         Response paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(RestAssured.baseURI, RestAssured.port, payment);
-
+       System.out.println(paymentSuccess.asPrettyString());
         assertFalse(paymentSuccess.jsonPath().getBoolean("success"), "Payment history created for customer without a energy plan");
     }
 }

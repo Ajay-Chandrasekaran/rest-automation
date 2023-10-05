@@ -196,7 +196,7 @@ public class ActivateDeactivateEnergyPlanTest {
 
         deactivateReq.setStatus(0);
         given()
-            .pathParam("energy-plan-id", energyPlanId.getResponse().getId())
+            .pathParam("id", energyPlanId.getResponse().getId())
             .contentType(ContentType.JSON)
             .body(deactivateReq)
         .when()

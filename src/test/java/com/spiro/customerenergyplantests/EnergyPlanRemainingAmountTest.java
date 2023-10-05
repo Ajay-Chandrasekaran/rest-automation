@@ -10,6 +10,7 @@ import java.time.LocalDate;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -45,7 +46,7 @@ public class EnergyPlanRemainingAmountTest {
     public void getRemainingAmountTest() throws IOException {
         String startDate = LocalDate.now().toString();
         String endDate = LocalDate.now().plusDays(5).toString();
-        int totalValue = 1000;
+        int totalValue = 2600;
 
         EnergyPlan reqBody = ObjectAndJsonUtils.createObjectFromJsonFile(RESOURCEPATH + "energy-plan.json", EnergyPlan.class);
         reqBody.setStartDate(startDate);
@@ -55,23 +56,17 @@ public class EnergyPlanRemainingAmountTest {
 
         EnergyPlanResponse1 energyPlanId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port, reqBody);
         Integer planId = energyPlanId.getResponse().getId();
-        System.out.println(planId);
         assertNotEquals(-1, planId, "Energy plan creation failed");
 
         // activate the new plan for customer
-        String customerId = "1683735366-1070-4fa8-bb2e-96687f0778d0";
+        String customerId = ObjectAndJsonUtils.UUIDgenerator();
         ActivatePlanForCustomer activateReq = new ActivatePlanForCustomer(planId, customerId);
         Response activationSuccess = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, activateReq);
         assertTrue(activationSuccess.jsonPath().getBoolean("success"), "Energy plan activation failed");
 
         // validate remaining amount after assigning plan
-        given()
-            .pathParam("customer-id", customerId)
-        .when()
-            .get("customers/energy-plan-remaining-amount/{customer-id}")
-        .then()
-            .statusCode(HttpStatus.SC_OK)
-            .body("response.remainingDueAmount", equalTo((float)totalValue));
+        float remainingBalance = EnergyPlanTestHelper.getRemainingBalance(RestAssured.baseURI, RestAssured.port, customerId);
+        Assertions.assertEquals(totalValue, remainingBalance);
 
         // ** Clean up after test **
         // pay remaining amount (pre conditoin for deactivation)
@@ -80,17 +75,12 @@ public class EnergyPlanRemainingAmountTest {
         payment.setCustomerId(customerId);
         payment.setSettlementAmount(totalValue);
         Response paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(RestAssured.baseURI, RestAssured.port, payment);
-        assertTrue(paymentSuccess.jsonPath().getBoolean("success"), "Payment failed");
-
-        // validating remaining amout after complete settlement
-        given()
-            .pathParam("customer-id", customerId)
-        .when()
-            .get("customers/energy-plan-remaining-amount/{customer-id}")
-        .then()
-            .statusCode(HttpStatus.SC_OK)
-            .body("response.remainingDueAmount", equalTo((float)0));
-
+      
+        assertTrue(paymentSuccess.jsonPath().getBoolean("[0].success"), "Payment failed");
+       
+        float remainingBalance1 = EnergyPlanTestHelper.getRemainingBalance(RestAssured.baseURI, RestAssured.port, customerId);
+        Assertions.assertEquals(0.0f, remainingBalance1);
+        
         // Deactivate energy plan
         Response deactivationSuccess = EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, customerId);
         assertTrue(deactivationSuccess.jsonPath().getBoolean("success"), "Deactivation of energy plan failed");
@@ -98,14 +88,14 @@ public class EnergyPlanRemainingAmountTest {
 
     @Test
     public void getRemainingAmountForCustomerWithoutPlanTest() {
-        String customerId = "1687243176-fd50-4f55-a231-84790d45fb28";
-
+        String customerId = ObjectAndJsonUtils.UUIDgenerator();
+        
         given()
             .pathParam("customer-id", customerId)
         .when()
-            .get("customers/energy-plan-remaining-amount/{customer-id}")
+            .get("/customers/{customer-id}/energy-plan-remaining-amount/")
         .then()
-            .statusCode(HttpStatus.SC_OK)
+            .statusCode(HttpStatus.SC_BAD_REQUEST)
             .body("success", equalTo(false));
     }
 }

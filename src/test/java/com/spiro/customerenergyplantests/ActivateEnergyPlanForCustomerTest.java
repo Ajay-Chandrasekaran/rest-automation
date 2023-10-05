@@ -127,7 +127,7 @@ public class ActivateEnergyPlanForCustomerTest {
      */
     @Test
     public void assignNonActivePlanForCustomerTest() throws IOException {
-        String customerId = "1690361168-0000-4fcc-9335-3f2207507c64";
+        String customerId = ObjectAndJsonUtils.UUIDgenerator();
 
         // Start and end date are in future to the status will be "yet to start" (Non active)
         String startDate = LocalDate.now().plusDays(10).toString();
@@ -191,7 +191,7 @@ public class ActivateEnergyPlanForCustomerTest {
             .statusCode(HttpStatus.SC_CREATED)
             .body("success", equalTo(true));
 
-        activateReq.setPlanId(260);
+        activateReq.setPlanId(1012);
         Response planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, activateReq);
         assertFalse(planActivated.jsonPath().getBoolean("success"), "Frist Energy plan activation failed");
 

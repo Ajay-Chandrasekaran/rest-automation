@@ -4,6 +4,8 @@ import static io.restassured.RestAssured.given;
 
 import java.util.ArrayList;
 
+import org.apache.http.HttpStatus;
+
 import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.CustomerByIdEnergyPlanResponse;
 import com.spiro.entities.EnergyPlan;
@@ -103,13 +105,14 @@ public class EnergyPlanTestHelper {
 
     public static float getRemainingBalance(String host,int port,String customerId) {
 
-        String URL=host+ ":" + port + "/customers/{customer-id}/energy-plans/";
-     float remainingBalance =
+        String URL=host+ ":" + port + "/customers/{customer-id}/energy-plan-remaining-amount/";
+        float remainingBalance =
              given().accept(ContentType.JSON)
                     .pathParam("customer-id", customerId)
              .when()
                     .get(URL)
              .then()
+                    .statusCode(HttpStatus.SC_OK)
                     .extract()
                     .jsonPath()
                     .getFloat("response.remainingDueAmount");
@@ -129,6 +132,17 @@ public class EnergyPlanTestHelper {
                 .as(CustomerByIdEnergyPlanResponse.class);
     
          return customerResponse;
+    }
+    
+    public static Response getCustomerPaymentHistory(String host,int port,String customerId) {
+        String URL=host+ ":" + port + "/customers/{customerId}/payment-history/";
+        
+       return given()
+            .pathParam("customerId",customerId)
+        .when()
+            .get(URL)
+        .then()
+            .extract().response();
     }
 }
 

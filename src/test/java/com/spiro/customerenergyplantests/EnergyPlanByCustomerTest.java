@@ -75,7 +75,7 @@ public class EnergyPlanByCustomerTest {
      */
     @Test
     public void customerWithEnergyPlanTest() {
-        String customerId = "1692211922-b51c-470f-89ae-16d4209123a8";
+        String customerId = "1686576739-97f1-4fff-8e38-012dc06e444f";
 
         given()
             .pathParam("customer-id", customerId)

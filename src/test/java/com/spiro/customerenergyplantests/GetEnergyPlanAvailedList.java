@@ -1,15 +1,14 @@
 package com.spiro.customerenergyplantests;
 
 import static io.restassured.RestAssured.given;
-
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterAll;
@@ -19,9 +18,10 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.EnergyPlan;
+import com.spiro.entities.EnergyPlanGetResponse;
+import com.spiro.entities.EnergyPlanResponse;
 import com.spiro.entities.EnergyPlanResponse1;
 import com.spiro.helpers.EnergyPlanTestHelper;
 import com.spiro.utils.ObjectAndJsonUtils;
@@ -34,7 +34,6 @@ import io.restassured.response.Response;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class GetEnergyPlanAvailedList {
 
-  
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
 
     @BeforeAll
@@ -42,30 +41,32 @@ public class GetEnergyPlanAvailedList {
         PropertiesReader propReader = PropertiesReader.getReader();
         RestAssured.baseURI = propReader.getHost();
         RestAssured.port = propReader.getPort();
+        RestAssured.basePath = "/customers";
     }
 
-     @AfterAll
+    @AfterAll
     public static void teardown() {
         RestAssured.reset();
     }
-     
-     public int createEnergyPlan() throws IOException {
-         String startDate = LocalDate.now().toString();
-         String endDate = LocalDate.now().plusMonths(1).toString();
-         Integer swapCount = 5;
 
-         EnergyPlan plan = ObjectAndJsonUtils.createObjectFromJsonFile(RESOURCEPATH + "energy-plan.json",
-                 EnergyPlan.class);
-         plan.setStartDate(startDate);
-         plan.setEndDate(endDate);
-         plan.setSwapCount(swapCount);
-         plan.setPlanTotalValue(2600);
+    public int createEnergyPlan() throws IOException {
+        String startDate = LocalDate.now().toString();
+        String endDate = LocalDate.now().plusMonths(1).toString();
+        Integer swapCount = 5;
 
-         EnergyPlanResponse1 energyPlanId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port, plan);
+        EnergyPlan plan = ObjectAndJsonUtils.createObjectFromJsonFile(RESOURCEPATH + "energy-plan.json",
+                EnergyPlan.class);
+        plan.setStartDate(startDate);
+        plan.setEndDate(endDate);
+        plan.setSwapCount(swapCount);
+        plan.setPlanTotalValue(2600);
 
-         return energyPlanId.getResponse().getId();
+        EnergyPlanResponse1 energyPlanId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port,
+                plan);
 
-     }
+        return energyPlanId.getResponse().getId();
+
+    }
 
     /*
      * 
@@ -76,18 +77,18 @@ public class GetEnergyPlanAvailedList {
     @Order(1)
     public void putActivateEnergyPlanBycustomerId1() throws IOException {
 
-    ActivatePlanForCustomer activatePlanForCustomer = new ActivatePlanForCustomer();
-    activatePlanForCustomer.setCustomerId(ObjectAndJsonUtils.UUIDgenerator());
-    
-    Response activateEnergyPlanForCustomer = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port,activatePlanForCustomer);
-    activatePlanForCustomer.setPlanId(createEnergyPlan());  
-       System.out.println(activatePlanForCustomer);
-        RestAssured.given().contentType(ContentType.JSON)
-                      .body(activateEnergyPlanForCustomer).when().put("/energy-plans")
-                .then()
-                 .statusCode(HttpStatus.SC_CREATED)
-                 .body("success", equalTo(true))
-                .body("message", equalTo("Customer has successfully availed energy plan."));
+        ActivatePlanForCustomer activatePlanForCustomer = new ActivatePlanForCustomer();
+        activatePlanForCustomer.setCustomerId(ObjectAndJsonUtils.UUIDgenerator());
+        activatePlanForCustomer.setPlanId(createEnergyPlan());
+        Response activateEnergyPlanForCustomer = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI,
+                RestAssured.port, activatePlanForCustomer);
+      
+        assertEquals("Customer has successfully availed energy plan.",
+                activateEnergyPlanForCustomer.jsonPath().getString("message"));
+        assertTrue(activateEnergyPlanForCustomer.jsonPath().getBoolean("success"));
+        assertEquals(201, activateEnergyPlanForCustomer.statusCode());
+      
+
     }
 
 //    @Test
@@ -128,78 +129,56 @@ public class GetEnergyPlanAvailedList {
 //                .statusCode(HttpStatus.SC_BAD_REQUEST).body("message", equalTo("Customer id is not present."));
 //    }
 //
-//    @Test
-//    @Order(3)
-//    public void validateCustomerEnergyPlanSize() {
-//        List<Integer> path = given().contentType(ContentType.JSON).when().get("/energy-plans").then()
-//                .statusCode(HttpStatus.SC_OK).body("message", equalTo("Customer fetched successfully.")).extract()
-//                .path("response.customerId");
-//
-//        assertTrue(path.size() > 0);
-//    }
-//
-//    @Test
-//    @Order(4)
-//    public void getCustomerEnergyPlan() throws FileNotFoundException {
-//
-//        Object jsonFiletoObject = convertJsonFiletoObject(JSONPATH + "putCustomerEnergyPlan.json");
-//        ActivateEnergyPlan convertJsontoSpecificClassType = convertJsontoSpecificClassType(jsonFiletoObject,
-//                ActivateEnergyPlan.class);
-//        convertJsontoSpecificClassType.setCustomerId(UUIDgenerator());
-//
-//        ActivateEnergyPlan energyPlan = convertJsontoSpecificClassType(jsonFiletoObject, ActivateEnergyPlan.class);
-//
-//        EnergyPlanFullResponse data = given().contentType(ContentType.JSON).when().get("/energy-plans").then()
-//                .statusCode(HttpStatus.SC_OK).body("message", equalTo("Customer fetched successfully.")).extract()
-//                .as(EnergyPlanFullResponse.class);
-//
-//        data.getResponse().stream().forEach((r) -> {
-//            if (energyPlan.getCustomerId().equals(r.getCustomerId())) {
-//                System.out.println(r.getEnergyPlanInfo().getId());
-//                if (r.getEnergyPlanInfo().getId() == (energyPlan.getPalnId())) {
-//                    assertTrue(true);
-//                }
-//                if (r.getEnergyPlanInfo().getStatus() == 1) {
-//                    assertTrue(true);
-//                }
-//            }
-//        });
-//
-//        ArrayList<EnergyPlanResponse> arrayList = new ArrayList<EnergyPlanResponse>();
-//
-//        data.getResponse().stream().forEach((r) -> {
-//            if (r.getEnergyPlanInfo().getStatus() == 1) {
-//                arrayList.add(r);
-//            }
-//        });
-//
-//        if (arrayList.size() == 0) {
-//            assertTrue(true);
-//        }
-//    }
-//
-//    // @Test
-//    @Order(5)
-//    public void postSwapHistory() {
-//
-//        Object jsonFiletoObject = convertJsonFiletoObject(JSONPATH + "postcustomerswaphistory");
-//
-//        Object jsonExpected = convertJsonFiletoObject(
-//                "src/test/resources/customerenergyresources/expectedswaphistoryresult");
-//
-//        SwapHistoryPojo actual = given().contentType(ContentType.JSON).body(jsonFiletoObject).when()
-//                .post("/swaps/history").then().body("status", equalTo(HttpStatus.SC_CREATED))
-//                .body("message",
-//                        equalTo("Swap history created successfully for Benin customer : 454858478747442744745"))
-//                .extract().jsonPath().getObject("response", SwapHistoryPojo.class);
-//
-//        System.out.println(actual);
-//
-//        SwapHistoryPojo expected = convertJsontoSpecificClassType(jsonExpected, SwapHistoryPojo.class);
-//        System.out.println(expected);
-//
-//        assertEquals(actual, expected);
-//    }
-//}
+    @Test
+    @Order(3)
+    public void validateCustomerEnergyPlanSize() {
+        List<Integer> path = given().contentType(ContentType.JSON).when().get("/energy-plans").then()
+                .statusCode(HttpStatus.SC_OK).body("message", equalTo("Customer fetched successfully.")).extract()
+                .path("response.customerId");
 
+        assertTrue(path.size() > 0);
+    }
+
+    @Test
+    @Order(4)
+    public void getCustomerEnergyPlan() throws IOException {
+
+        ActivatePlanForCustomer customerEnergyPlan = ObjectAndJsonUtils
+                .createObjectFromJsonFile(RESOURCEPATH + "putCustomerEnergyPlan.json", ActivatePlanForCustomer.class);
+        String customerId = ObjectAndJsonUtils.UUIDgenerator();
+        customerEnergyPlan.setCustomerId(customerId);
+
+        Response activateEnergyPlanForCustomer = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI,
+                RestAssured.port, customerEnergyPlan);
+        assertTrue(activateEnergyPlanForCustomer.jsonPath().getBoolean("success"));
+        assertEquals("Customer has successfully availed energy plan.",
+                activateEnergyPlanForCustomer.jsonPath().getString("message"));
+
+        EnergyPlanGetResponse data = given().contentType(ContentType.JSON).when().get("/energy-plans").then()
+                .statusCode(HttpStatus.SC_OK).body("message", equalTo("Customer fetched successfully.")).extract()
+                .as(EnergyPlanGetResponse.class);
+
+        data.getResponse().stream().forEach((r) -> {
+            if (customerEnergyPlan.getCustomerId().equals(r.getCustomerId())) {
+                if (r.getEnergyPlanInfo().getId() == (customerEnergyPlan.getPlanId())) {
+                    assertTrue(true);
+                }
+                if (r.getEnergyPlanInfo().getStatus() == 1) {
+                    assertTrue(true);
+                }
+            }
+        });
+
+        ArrayList<EnergyPlanResponse> arrayList = new ArrayList<EnergyPlanResponse>();
+
+        data.getResponse().stream().forEach((r) -> {
+            if (r.getEnergyPlanInfo().getStatus() == 1) {
+                arrayList.add(r);
+            }
+        });
+
+        if (arrayList.size() == 0) {
+            assertTrue(true);
+        }
+    }
 }
