@@ -97,7 +97,8 @@ public class GetEnergyPlanByIdTest {
         .when()
             .get("/energy-plans/{energy-plan-id}")
         .then()
-            .statusCode(HttpStatus.SC_BAD_REQUEST)
+            .body("message", equalTo("Energy Plan not found for given Id."))
+            .body("status", equalTo(404) )
             .body("success", equalTo(false));
     }
 }

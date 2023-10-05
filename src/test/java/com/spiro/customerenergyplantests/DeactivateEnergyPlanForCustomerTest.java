@@ -17,9 +17,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import io.restassured.RestAssured;
+import io.restassured.response.Response;
 
 import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.EnergyPlan;
+import com.spiro.entities.EnergyPlanResponse1;
 import com.spiro.entities.Payment;
 import com.spiro.helpers.EnergyPlanTestHelper;
 import com.spiro.utils.ObjectAndJsonUtils;
@@ -55,12 +57,12 @@ public class DeactivateEnergyPlanForCustomerTest {
         reqBody.setSwapCount(0);
         reqBody.setPlanTotalValue(0);
 
-        int planId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port, reqBody);
-        assertNotEquals(-1, planId, "Error while creating energy plan");
+        EnergyPlanResponse1 planId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port, reqBody);
+        assertNotEquals(-1, planId.getResponse().getId(), "Error while creating energy plan");
 
-        ActivatePlanForCustomer activateReq = new ActivatePlanForCustomer(planId, customerId);
-        boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, activateReq);
-        assertTrue(planActivated, "Error while activating plan for customer: " + customerId);
+        ActivatePlanForCustomer activateReq = new ActivatePlanForCustomer(planId.getResponse().getId(), customerId);
+        Response planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, activateReq);
+        assertTrue(planActivated.jsonPath().getBoolean("success"), "Error while activating plan for customer: " + customerId);
 
         given()
             .pathParam("customer-id", customerId)
@@ -85,13 +87,13 @@ public class DeactivateEnergyPlanForCustomerTest {
         reqBody.setSwapCount(0);
         reqBody.setPlanTotalValue(totalValue);
 
-        int planId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port, reqBody);
-        assertNotEquals(-1, planId, "Error while creating energy plan");
+        EnergyPlanResponse1 planId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port, reqBody);
+        assertNotEquals(-1, planId.getResponse().getId(), "Error while creating energy plan");
 
         try {
-            ActivatePlanForCustomer activateReq = new ActivatePlanForCustomer(planId, customerId);
-            boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, activateReq);
-            assertTrue(planActivated, "Error while activating plan for customer: " + customerId);
+            ActivatePlanForCustomer activateReq = new ActivatePlanForCustomer(planId.getResponse().getId(), customerId);
+            Response planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, activateReq);
+            assertTrue(planActivated.jsonPath().getBoolean("success"), "Error while activating plan for customer: " + customerId);
 
             given()
                 .pathParam("customer-id", customerId)
@@ -102,11 +104,12 @@ public class DeactivateEnergyPlanForCustomerTest {
                 .body("success", equalTo(false));
         } finally {
             Payment payment = ObjectAndJsonUtils.createObjectFromJsonFile(RESOURCEPATH + "create-payment.json", Payment.class);
-            payment.setOfferId(planId);
+            payment.setOfferId(planId.getResponse().getId());
             payment.setCustomerId(customerId);
             payment.setSettlementAmount(totalValue);
-            boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(RestAssured.baseURI, RestAssured.port, payment);
-            if (!EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, customerId) || !paymentSuccess) {
+            Response paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(RestAssured.baseURI, RestAssured.port, payment);
+            boolean paymentSuccess1 = paymentSuccess.jsonPath().getBoolean("success");
+            if (!EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, customerId).jsonPath().getBoolean("success") || !paymentSuccess1) {
                 System.err.println("Energy plan(" + planId + ") deactivation for customer : " + customerId + " Failed");
             }
         }
@@ -126,13 +129,13 @@ public class DeactivateEnergyPlanForCustomerTest {
         reqBody.setSwapCount(0);
         reqBody.setPlanTotalValue(totalValue);
 
-        int planId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port, reqBody);
-        assertNotEquals(-1, planId, "Error while creating energy plan");
+        EnergyPlanResponse1 planId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port, reqBody);
+        assertNotEquals(-1, planId.getResponse().getId(), "Error while creating energy plan");
 
         try {
-            ActivatePlanForCustomer activateReq = new ActivatePlanForCustomer(planId, customerId);
-            boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, activateReq);
-            assertTrue(planActivated, "Error while activating plan for customer: " + customerId);
+            ActivatePlanForCustomer activateReq = new ActivatePlanForCustomer(planId.getResponse().getId(), customerId);
+            Response planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, activateReq);
+            assertTrue(planActivated.jsonPath().getBoolean("success"), "Error while activating plan for customer: " + customerId);
 
             given()
                 .pathParam("customer-id", customerId)
@@ -142,7 +145,7 @@ public class DeactivateEnergyPlanForCustomerTest {
                 .statusCode(HttpStatus.SC_OK)
                 .body("success", equalTo(true));
         } finally {
-            if (!EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, customerId)) {
+            if (!EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, customerId).jsonPath().getBoolean("success")) {
                 System.err.println("Energy plan(" + planId + ") deactivation for customer : " + customerId + " Failed");
             }
         }

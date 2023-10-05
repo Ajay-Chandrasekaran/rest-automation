@@ -32,7 +32,7 @@ public class EnergyPlanTestHelper {
     public static Response activateEnergyPlanForCustomer(String host, int port, ActivatePlanForCustomer req) {
         
         String URL = host + ":" + port + "/customers/energy-plans";
-
+        System.out.println(req);
         return given()
             .contentType(ContentType.JSON)
             .body(req)
@@ -62,10 +62,10 @@ public class EnergyPlanTestHelper {
         String URL = host + ":" + port + "/customers/payments/history";
         PaymentHistoryList history = new PaymentHistoryList();
         history.getHistory().add(payment);
-
+        System.out.println(payment);
       return given()
-            .body(history.getHistory())
             .contentType(ContentType.JSON)
+            .body(history)
         .when()
             .post(URL)
         .then()
@@ -91,7 +91,7 @@ public class EnergyPlanTestHelper {
 
     public static float getRemainingBalance(String host,int port,String customerId) {
 
-        String URL=host+ ":" + port + "/customers/{customer-id}/energy-plan-remaining-amount/";
+        String URL=host+ ":" + port + "/customers/{customer-id}/energy-plans/";
      float remainingBalance =
              given().accept(ContentType.JSON)
                     .pathParam("customer-id", customerId)

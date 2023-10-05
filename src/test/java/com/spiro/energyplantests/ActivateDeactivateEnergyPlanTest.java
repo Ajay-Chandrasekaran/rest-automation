@@ -16,10 +16,12 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 
 import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.DeactivateEnergyPlanRequest;
 import com.spiro.entities.EnergyPlan;
+import com.spiro.entities.EnergyPlanResponse1;
 import com.spiro.helpers.EnergyPlanTestHelper;
 import com.spiro.utils.ObjectAndJsonUtils;
 import com.spiro.utils.PropertiesReader;
@@ -47,14 +49,14 @@ public class ActivateDeactivateEnergyPlanTest {
      */
     @Test
     public void deactivatePlanWithCustomerTest() {
-        String customerId = "1683292260-0bf8-4bdf-aad0-5c4fc62cb619";
-        int energyPlanId = 266;
+        String customerId = ObjectAndJsonUtils.UUIDgenerator();
+        int energyPlanId = 1010;
 
         try {
             // Activate a plan for customer
             ActivatePlanForCustomer activationReq = new ActivatePlanForCustomer(energyPlanId, customerId);
-            boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, activationReq);
-            assertTrue(planActivated, "Energy plan activatoin failed for customer: " + customerId);
+            Response planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, activationReq);
+            assertTrue(planActivated.jsonPath().getBoolean("success"), "Energy plan activatoin failed for customer: " + customerId);
 
             // Test deactivation
             DeactivateEnergyPlanRequest deactivateReq = new DeactivateEnergyPlanRequest();
@@ -63,11 +65,11 @@ public class ActivateDeactivateEnergyPlanTest {
             deactivateReq.setStatus(1); // to deactivate
 
             given()
-                .pathParam("energy-plan-id", energyPlanId)
+                .pathParam("id", energyPlanId)
                 .contentType(ContentType.JSON)
                 .body(deactivateReq)
             .when()
-                .patch("/energy-plans/{energy-plan-id}/status")
+                .patch("/energy-plans/{id}/status")
             .then()
                 .statusCode(HttpStatus.SC_OK) // TODO: Should it be 400 instead ?
                 .body("success", equalTo(false))
@@ -89,8 +91,8 @@ public class ActivateDeactivateEnergyPlanTest {
         reqBody.setSwapCount(0);
         reqBody.setPlanTotalValue(totalValue);
 
-        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port, reqBody);
-        assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
+        EnergyPlanResponse1 energyPlanId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port, reqBody);
+        assertNotEquals(-1, energyPlanId.getResponse().getId(), "Energy plan creation failed");
 
         DeactivateEnergyPlanRequest deactivateReq = new DeactivateEnergyPlanRequest();
             deactivateReq.setCreatedBy("ATHENA_PORTAL");
@@ -98,11 +100,11 @@ public class ActivateDeactivateEnergyPlanTest {
             deactivateReq.setStatus(1); // to deactivate
 
             given()
-                .pathParam("energy-plan-id", energyPlanId)
+                .pathParam("id", energyPlanId)
                 .contentType(ContentType.JSON)
                 .body(deactivateReq)
             .when()
-                .patch("/energy-plans/{energy-plan-id}/status")
+                .patch("/energy-plans/{id}/status")
             .then()
                 .statusCode(HttpStatus.SC_OK) // TODO: Should it be 400 instead ?
                 .body("success", equalTo(true))
@@ -119,11 +121,11 @@ public class ActivateDeactivateEnergyPlanTest {
         deactivateReq.setStatus(0); // to activate
 
         given()
-            .pathParam("energy-plan-id", energyPlanId)
+            .pathParam("id", energyPlanId)
             .contentType(ContentType.JSON)
             .body(deactivateReq)
         .when()
-            .patch("/energy-plans/{energy-plan-id}/status")
+            .patch("/energy-plans/{id}/status")
         .then()
             .statusCode(HttpStatus.SC_OK) // TODO: Should it be 400 instead ?
             .body("success", equalTo(false))
@@ -142,7 +144,7 @@ public class ActivateDeactivateEnergyPlanTest {
         reqBody.setSwapCount(0);
         reqBody.setPlanTotalValue(totalValue);
 
-        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port, reqBody);
+        EnergyPlanResponse1 energyPlanId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port, reqBody);
         assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
 
         DeactivateEnergyPlanRequest deactivateReq = new DeactivateEnergyPlanRequest();
@@ -151,11 +153,11 @@ public class ActivateDeactivateEnergyPlanTest {
         deactivateReq.setStatus(0); // to deactivate
 
         given()
-            .pathParam("energy-plan-id", energyPlanId)
+            .pathParam("id", energyPlanId)
             .contentType(ContentType.JSON)
             .body(deactivateReq)
         .when()
-            .patch("/energy-plans/{energy-plan-id}/status")
+            .patch("/energy-plans/{id}/status")
         .then()
             .statusCode(HttpStatus.SC_OK) // TODO: Should it be 400 instead ?
             .body("success", equalTo(true))
@@ -174,8 +176,8 @@ public class ActivateDeactivateEnergyPlanTest {
         reqBody.setSwapCount(0);
         reqBody.setPlanTotalValue(totalValue);
 
-        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port, reqBody);
-        assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
+        EnergyPlanResponse1 energyPlanId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port, reqBody);
+        assertNotEquals(-1, energyPlanId.getResponse().getId(), "Energy plan creation failed");
 
         DeactivateEnergyPlanRequest deactivateReq = new DeactivateEnergyPlanRequest();
         deactivateReq.setCreatedBy("ATHENA_PORTAL");
@@ -183,11 +185,11 @@ public class ActivateDeactivateEnergyPlanTest {
         deactivateReq.setStatus(1); // to deactivate
 
         given()
-            .pathParam("energy-plan-id", energyPlanId)
+            .pathParam("id", energyPlanId)
             .contentType(ContentType.JSON)
             .body(deactivateReq)
         .when()
-            .patch("/energy-plans/{energy-plan-id}/status")
+            .patch("/energy-plans/{id}/status")
         .then()
             .statusCode(HttpStatus.SC_OK) // TODO: Should it be 400 instead ?
             .body("success", equalTo(true));

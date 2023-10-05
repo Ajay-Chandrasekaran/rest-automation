@@ -47,9 +47,6 @@
                                 "createdBy": {
                                     "type": "string"
                                 },
-                                "offerCode": {
-                                    "type": "string"
-                                },
                                 "offerName": {
                                     "type": "string"
                                 },
@@ -74,7 +71,6 @@
                                 "lastUpdatedBy",
                                 "createdDate",
                                 "createdBy",
-                                "offerCode",
                                 "offerName",
                                 "countryCode",
                                 "countryName",

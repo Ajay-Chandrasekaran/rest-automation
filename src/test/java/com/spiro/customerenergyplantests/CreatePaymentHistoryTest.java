@@ -16,6 +16,7 @@ import com.spiro.utils.ObjectAndJsonUtils;
 import com.spiro.utils.PropertiesReader;
 
 import io.restassured.RestAssured;
+import io.restassured.response.Response;
 
 public class CreatePaymentHistoryTest {
 
@@ -35,25 +36,25 @@ public class CreatePaymentHistoryTest {
 
     @Test
     public void createPaymentForValidCustomerTest() throws IOException {
-        String customerId = "1683292260-0bf8-4bdf-aad0-5c4fc62cb619";
-        int energyPlanId = 260;
-        int settlementAmount = 1000;
+        String customerId = ObjectAndJsonUtils.UUIDgenerator();
+        int energyPlanId = 1010;
+        int settlementAmount = 5000;
 
         try {
             // Activate a plan for customer
             ActivatePlanForCustomer activationReq = new ActivatePlanForCustomer(energyPlanId, customerId);
-            boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, activationReq);
-          
-            assertTrue(planActivated, "Energy plan activatoin failed for customer: " + customerId);
+            Response planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, activationReq);
+            assertTrue(planActivated.jsonPath().getBoolean("success"), "Energy plan activatoin failed for customer: " + customerId);
 
             // Make payment
             Payment payment = ObjectAndJsonUtils.createObjectFromJsonFile(RESOURCEPATH + "create-payment.json", Payment.class);
             payment.setOfferId(energyPlanId);
             payment.setCustomerId(customerId);
             payment.setSettlementAmount(settlementAmount);
-            boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(RestAssured.baseURI, RestAssured.port, payment);
-  
-            assertTrue(paymentSuccess, "Payment passed");
+            Response paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(RestAssured.baseURI, RestAssured.port, payment);
+            System.out.println(paymentSuccess.jsonPath().getBoolean("[0]")+ " " + payment.getCustomerId());
+            
+            assertTrue(paymentSuccess.jsonPath().getBoolean("success"), "Payment passed");
         } finally {
             EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, customerId);
         }
@@ -61,7 +62,7 @@ public class CreatePaymentHistoryTest {
 
     @Test
     public void createPaymentForCustomerWithoutPlanTest() throws IOException {
-        String customerId = "1681491471-a5b6-4ff3-948b-f2c542e64983";
+        String customerId = ObjectAndJsonUtils.UUIDgenerator();
         int energyPlanId = 260;
         int settlementAmount = 1000;
 
@@ -71,8 +72,8 @@ public class CreatePaymentHistoryTest {
         payment.setCustomerId(customerId);
         payment.setSettlementAmount(settlementAmount);
 
-        boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(RestAssured.baseURI, RestAssured.port, payment);
+        Response paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(RestAssured.baseURI, RestAssured.port, payment);
 
-        assertFalse(paymentSuccess, "Payment history created for customer without a energy plan");
+        assertFalse(paymentSuccess.jsonPath().getBoolean("success"), "Payment history created for customer without a energy plan");
     }
 }

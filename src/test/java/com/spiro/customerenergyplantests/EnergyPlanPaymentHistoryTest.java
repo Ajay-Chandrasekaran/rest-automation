@@ -13,13 +13,13 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
+import io.restassured.response.Response;
 
 import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.Payment;
 import com.spiro.helpers.EnergyPlanTestHelper;
 import com.spiro.utils.ObjectAndJsonUtils;
 import com.spiro.utils.PropertiesReader;
-
 
 public class EnergyPlanPaymentHistoryTest {
 
@@ -48,24 +48,19 @@ public class EnergyPlanPaymentHistoryTest {
     public void getPaymentHistoryOfInvalidCustomerTest() {
         String customerId = "1692455325-e43b-4608-8d8a-29458e6dbe69";
 
-        given()
-            .pathParam("customer-id", customerId)
-        .when()
-            .get("/customers/payment-history/{customer-id}")
-        .then()
-            .statusCode(HttpStatus.SC_BAD_REQUEST)
-            .body("success", equalTo(false));
+        given().pathParam("customer-id", customerId).when().get("/customers/{customer-id}/payment-history/").then()
+                .statusCode(HttpStatus.SC_BAD_REQUEST).body("success", equalTo(false));
     }
 
     /**
      * [GET] customers/payment-history/{customer-id}
      *
-     * Assign an energy plan to customer, makes a payment and verifies
-     * the payment history.
+     * Assign an energy plan to customer, makes a payment and verifies the payment
+     * history.
      *
      * Expected: Payment made should be retrieved in payment history
      */
-    // @Test
+     @Test
     public void getPaymentHistoryOfValidCustomerTest() throws IOException {
         String customerId = "1683292260-0bf8-4bdf-aad0-5c4fc62cb619";
         int energyPlanId = 260;
@@ -74,26 +69,24 @@ public class EnergyPlanPaymentHistoryTest {
         try {
             // Activate a plan for customer
             ActivatePlanForCustomer activationReq = new ActivatePlanForCustomer(energyPlanId, customerId);
-            boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, activationReq);
-            assertTrue(planActivated, "Energy plan activatoin failed for customer: " + customerId);
+            Response planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI,
+                    RestAssured.port, activationReq);
+            assertTrue(planActivated.jsonPath().getBoolean("success"), "Energy plan activatoin failed for customer: " + customerId);
 
             // Make payment
-            Payment payment = ObjectAndJsonUtils.createObjectFromJsonFile(RESOURCEPATH + "create-payment.json", Payment.class);
+            Payment payment = ObjectAndJsonUtils.createObjectFromJsonFile(RESOURCEPATH + "create-payment.json",
+                    Payment.class);
             payment.setOfferId(energyPlanId);
             payment.setCustomerId(customerId);
             payment.setSettlementAmount(settlementAmount);
-            boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(RestAssured.baseURI, RestAssured.port, payment);
-            assertTrue(paymentSuccess, "Payment failed");
+            Response paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(RestAssured.baseURI, RestAssured.port,
+                    payment);
+            assertTrue(paymentSuccess.jsonPath().getBoolean("success"), "Payment failed");
 
             // Payment should reflect in history
-            Payment paid = given()
-                .pathParam("customer-id", customerId)
-            .when()
-                .get("/customers/payment-history/{customer-id}")
-            .then()
-                .statusCode(HttpStatus.SC_OK)
-                .body("success", equalTo(true))
-            .extract().jsonPath().getObject("response[0]", Payment.class);
+            Payment paid = given().pathParam("customer-id", customerId).when()
+                    .get("/customers/{customer-id}/payment-history/").then().statusCode(HttpStatus.SC_OK)
+                    .body("success", equalTo(true)).extract().jsonPath().getObject("response[0]", Payment.class);
 
             assertEquals(payment, paid);
         } finally {

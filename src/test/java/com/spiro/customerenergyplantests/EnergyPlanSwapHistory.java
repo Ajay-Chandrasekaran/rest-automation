@@ -28,6 +28,7 @@ import com.spiro.utils.PropertiesReader;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class EnergyPlanSwapHistory {
@@ -62,9 +63,9 @@ public class EnergyPlanSwapHistory {
         plan.setSwapCount(swapCount);
         plan.setPlanTotalValue(2600);
 
-        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port, plan);
+        EnergyPlanResponse1 energyPlanId = EnergyPlanTestHelper.createEnergyPlan(RestAssured.baseURI, RestAssured.port, plan);
 
-        return energyPlanId;
+        return energyPlanId.getResponse().getId();
 
     }
 
@@ -155,17 +156,19 @@ public class EnergyPlanSwapHistory {
 
     public void deactivateCustomerEnergyPlan(String customerId) {
 
-        boolean deactivateEnergyPlanForCustomer = EnergyPlanTestHelper
+        Response deactivateEnergyPlanForCustomer = EnergyPlanTestHelper
                 .deactivateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, customerId);
+        boolean boolean1 = deactivateEnergyPlanForCustomer.jsonPath().getBoolean("success");
         System.out.println("passed");
-        Assertions.assertTrue(deactivateEnergyPlanForCustomer);
+        Assertions.assertTrue(boolean1);
     }
 
     public void deactiveCustomerEnergyPlanFail(String customerId) {
-        boolean deactivateEnergyPlanForCustomer = EnergyPlanTestHelper
+        Response deactivateEnergyPlanForCustomer = EnergyPlanTestHelper
                 .deactivateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, customerId);
+        boolean boolean1 = deactivateEnergyPlanForCustomer.jsonPath().getBoolean("success");
         System.out.println("failed");
-        Assertions.assertFalse(deactivateEnergyPlanForCustomer);
+        Assertions.assertFalse(boolean1);
     }
 
     @Test
