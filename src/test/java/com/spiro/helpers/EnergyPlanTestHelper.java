@@ -3,6 +3,8 @@ package com.spiro.helpers;
 import static io.restassured.RestAssured.given;
 
 import org.apache.http.HttpStatus;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -16,8 +18,11 @@ import com.spiro.entities.SwapHistory;
 
 public class EnergyPlanTestHelper {
 
+    private static final Logger logger = LogManager.getLogger();
+
     public static Response createEnergyPlan(EnergyPlan plan) {
         String URL = "/energy-plans";
+        logger.info("Creating energy plan - [POST] {}", URL);
 
         return given()
             .header("Content-Type", ContentType.JSON)
@@ -31,7 +36,7 @@ public class EnergyPlanTestHelper {
 
     public static Response activateEnergyPlanForCustomer(ActivatePlanForCustomer req) {
         String URL = "/customers/energy-plans";
-
+        logger.info("Activating energy plan for customer - [PUT] {}", URL);
         return given()
             .contentType(ContentType.JSON)
             .body(req)
@@ -42,6 +47,7 @@ public class EnergyPlanTestHelper {
 
     public static Response deactivateEnergyPlanForCustomer(String customerId) {
         String URL = "/customers/{customer-id}/energy-plans";
+        logger.info("Deactivating energy plan for customer - [PATCH] {}", URL.replace("{customer-id}", customerId));
 
         return given()
             .pathParam("customer-id", customerId)
@@ -52,6 +58,7 @@ public class EnergyPlanTestHelper {
 
     public static Response createPaymentHistory(Payment payment) {
         String URL = "/customers/payments/history";
+        logger.info("Creating payment history - [POST] {}", URL);
 
         PaymentHistoryList history = new PaymentHistoryList();
         history.getHistory().add(payment);
@@ -66,6 +73,7 @@ public class EnergyPlanTestHelper {
 
     public static Response createSwapHistory(SwapHistory swap) {
         String URL = "/customers/swaps/history";
+        logger.info("Creating swap history - [POST] {}", URL);
 
         return given()
             .accept(ContentType.JSON)
@@ -76,8 +84,9 @@ public class EnergyPlanTestHelper {
         .then().extract().response();
     }
 
-    public static Response getRemainingBalance(String host,int port,String customerId) {
+    public static Response getRemainingBalance(String customerId) {
         String URL = "/customers/{customer-id}/energy-plan-remaining-amount/";
+        logger.info("Geting remaining balance - [POST] {}", URL.replace("{customer-id}", customerId));
 
         return given()
             .accept(ContentType.JSON)
@@ -87,8 +96,9 @@ public class EnergyPlanTestHelper {
         .then().extract().response();
     }
 
-    public static Response getCutomerById(String customerId) {
+    public static Response getEnergyPlanOfCutomerById(String customerId) {
         String URL = "/customers/{customer-id}/energy-plans";
+        logger.info("Getting energy plan of customer by Id - [GET] {}", URL.replace("{customer-id}", customerId));
 
         return given()
             .pathParam("customer-id", customerId)
@@ -96,6 +106,4 @@ public class EnergyPlanTestHelper {
             .get(URL)
         .then().extract().response();
     }
-
-    public static void init() {}
 }
