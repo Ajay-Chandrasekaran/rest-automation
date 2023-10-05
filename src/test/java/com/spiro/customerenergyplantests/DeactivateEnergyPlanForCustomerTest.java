@@ -2,6 +2,7 @@ package com.spiro.customerenergyplantests;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 
@@ -76,7 +77,7 @@ public class DeactivateEnergyPlanForCustomerTest {
     @Test
     @Order(3)
     public void deactivateEnergyPlanForCustomerWithDueTest() throws IOException {
-        String customerId = "1657618561-1597-4dc4-ae35-f48d2f4e45e5";
+        String customerId = ObjectAndJsonUtils.UUIDgenerator();
         String startDate = LocalDate.now().toString();
         String endDate = LocalDate.now().plusDays(5).toString();
         int totalValue = 1000;
@@ -93,15 +94,16 @@ public class DeactivateEnergyPlanForCustomerTest {
         try {
             ActivatePlanForCustomer activateReq = new ActivatePlanForCustomer(planId.getResponse().getId(), customerId);
             Response planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, activateReq);
+            System.out.println(planActivated.asPrettyString());
             assertTrue(planActivated.jsonPath().getBoolean("success"), "Error while activating plan for customer: " + customerId);
 
-            given()
-                .pathParam("customer-id", customerId)
-            .when()
-                .patch("/customers/{customer-id}/energy-plans")
-            .then()
-                .statusCode(HttpStatus.SC_OK)
-                .body("success", equalTo(false));
+            Response deactivateEnergyPlanForCustomer = EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, customerId);
+            System.out.println(deactivateEnergyPlanForCustomer.asPrettyString());
+            boolean boolean1 = deactivateEnergyPlanForCustomer.jsonPath().getBoolean("success");
+            System.out.println(boolean1);
+            assertFalse(boolean1);
+       
+                
         } finally {
             Payment payment = ObjectAndJsonUtils.createObjectFromJsonFile(RESOURCEPATH + "create-payment.json", Payment.class);
             payment.setOfferId(planId.getResponse().getId());

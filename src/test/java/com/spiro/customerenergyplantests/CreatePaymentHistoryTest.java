@@ -51,10 +51,8 @@ public class CreatePaymentHistoryTest {
             payment.setOfferId(energyPlanId);
             payment.setCustomerId(customerId);
             payment.setSettlementAmount(settlementAmount);
-            Response paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(RestAssured.baseURI, RestAssured.port, payment);
-            System.out.println(paymentSuccess.jsonPath().getBoolean("[0]")+ " " + payment.getCustomerId());
-            
-            assertTrue(paymentSuccess.jsonPath().getBoolean("success"), "Payment passed");
+            Response paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(RestAssured.baseURI, RestAssured.port, payment);          
+            assertTrue(paymentSuccess.jsonPath().getBoolean("[0].success"), "Payment passed");
         } finally {
             EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, customerId);
         }

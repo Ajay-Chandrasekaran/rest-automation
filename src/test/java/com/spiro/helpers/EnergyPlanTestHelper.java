@@ -1,6 +1,9 @@
 package com.spiro.helpers;
 
 import static io.restassured.RestAssured.given;
+
+import java.util.ArrayList;
+
 import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.CustomerByIdEnergyPlanResponse;
 import com.spiro.entities.EnergyPlan;
@@ -32,7 +35,7 @@ public class EnergyPlanTestHelper {
     public static Response activateEnergyPlanForCustomer(String host, int port, ActivatePlanForCustomer req) {
         
         String URL = host + ":" + port + "/customers/energy-plans";
-        System.out.println(req);
+      
         return given()
             .contentType(ContentType.JSON)
             .body(req)
@@ -56,16 +59,25 @@ public class EnergyPlanTestHelper {
 
        
     }
-
+    
+    /**
+     * 
+     * @param host
+     * @param port
+     * @param payment
+     * @return
+     */
     public static Response createPaymentHistory(String host, int port, Payment payment) {
        
         String URL = host + ":" + port + "/customers/payments/history";
-        PaymentHistoryList history = new PaymentHistoryList();
-        history.getHistory().add(payment);
-        System.out.println(payment);
+       
+        ArrayList<Payment> paymentList = new ArrayList<>();
+        paymentList.add(payment);
+     
+      
       return given()
             .contentType(ContentType.JSON)
-            .body(history)
+            .body(paymentList)
         .when()
             .post(URL)
         .then()
