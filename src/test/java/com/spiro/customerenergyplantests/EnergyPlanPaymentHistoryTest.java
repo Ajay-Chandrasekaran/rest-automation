@@ -8,7 +8,6 @@ import static org.testng.Assert.assertEquals;
 import java.io.IOException;
 
 import org.apache.http.HttpStatus;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.spiro.entities.ActivatePlanForCustomer;
@@ -21,11 +20,6 @@ import com.spiro.utils.ObjectAndJsonUtils;
 public class EnergyPlanPaymentHistoryTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
-
-    @BeforeClass
-    public static void setup() throws IOException {
-        EnergyPlanTestHelper.init();
-    }
 
     /**
      * [GET] customers/payment-history/{customer-id}
@@ -64,7 +58,7 @@ public class EnergyPlanPaymentHistoryTest {
         try {
             // Activate a plan for customer
             ActivatePlanForCustomer activationReq = new ActivatePlanForCustomer(energyPlanId, customerId);
-            boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(activationReq);
+            boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(activationReq).jsonPath().getBoolean("success");
             assertTrue(planActivated, "Energy plan activatoin failed for customer: " + customerId);
 
             // Make payment
@@ -72,7 +66,7 @@ public class EnergyPlanPaymentHistoryTest {
             payment.setOfferId(energyPlanId);
             payment.setCustomerId(customerId);
             payment.setSettlementAmount(settlementAmount);
-            boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(payment);
+            boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(payment).jsonPath().getBoolean("[0].success");
             assertTrue(paymentSuccess, "Payment failed");
 
             // Payment should reflect in history

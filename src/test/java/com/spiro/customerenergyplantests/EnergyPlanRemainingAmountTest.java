@@ -10,7 +10,6 @@ import java.time.LocalDate;
 
 import org.apache.http.HttpStatus;
 import org.testng.annotations.Test;
-import org.testng.annotations.BeforeClass;
 
 import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.EnergyPlan;
@@ -24,11 +23,6 @@ public class EnergyPlanRemainingAmountTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
 
-    @BeforeClass
-    public static void setup() throws IOException {
-        EnergyPlanTestHelper.init();
-    }
-
     @Test
     public void getRemainingAmountTest() throws IOException {
         String startDate = LocalDate.now().toString();
@@ -41,13 +35,13 @@ public class EnergyPlanRemainingAmountTest {
         reqBody.setSwapCount(0);
         reqBody.setPlanTotalValue(totalValue);
 
-        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(reqBody);
+        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(reqBody).jsonPath().getInt("response.id");
         assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
 
         // activate the new plan for customer
         String customerId = CsvUtils.getNextCustomer();
         ActivatePlanForCustomer activateReq = new ActivatePlanForCustomer(energyPlanId, customerId);
-        boolean activationSuccess = EnergyPlanTestHelper.activateEnergyPlanForCustomer(activateReq);
+        boolean activationSuccess = EnergyPlanTestHelper.activateEnergyPlanForCustomer(activateReq).jsonPath().getBoolean("success");
         assertTrue(activationSuccess, "Energy plan activation failed");
 
         // validate remaingin amount after assigning plan
@@ -65,7 +59,7 @@ public class EnergyPlanRemainingAmountTest {
         payment.setOfferId(energyPlanId);
         payment.setCustomerId(customerId);
         payment.setSettlementAmount(totalValue);
-        boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(payment);
+        boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(payment).jsonPath().getBoolean("success");
         assertTrue(paymentSuccess, "Payment failed");
 
         // validating remaining amout after complete settlement
@@ -78,7 +72,7 @@ public class EnergyPlanRemainingAmountTest {
             .body("response.remainingDueAmount", equalTo((float)0));
 
         // Deactivate energy plan
-        boolean deactivationSuccess = EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(customerId);
+        boolean deactivationSuccess = EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(customerId).jsonPath().getBoolean("success");
         assertTrue(deactivationSuccess, "Deactivation of energy plan failed");
     }
 

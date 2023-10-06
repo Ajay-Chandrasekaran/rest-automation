@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 import org.apache.http.HttpStatus;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import io.restassured.http.ContentType;
@@ -24,11 +23,6 @@ import com.spiro.utils.ObjectAndJsonUtils;
 public class ActivateEnergyPlanForCustomerTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
-
-    @BeforeClass
-    public static void setup() throws IOException {
-        EnergyPlanTestHelper.init();
-    }
 
     /*
      * [PUT] /customers/energy-plans
@@ -50,8 +44,8 @@ public class ActivateEnergyPlanForCustomerTest {
         plan.setSwapCount(0);
         plan.setPlanTotalValue(0);
 
-        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(plan);
-        assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
+        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(plan).jsonPath().getInt("response.id");
+        assertNotEquals(energyPlanId, -1, "Energy plan creation failed");
 
         // test plan activation
         ActivatePlanForCustomer activateReq = new ActivatePlanForCustomer(energyPlanId, customerId);
@@ -64,7 +58,7 @@ public class ActivateEnergyPlanForCustomerTest {
             .statusCode(HttpStatus.SC_CREATED)
             .body("success", equalTo(true));
 
-        if (!EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(customerId)) {
+        if (!EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(customerId).jsonPath().getBoolean("sucecess")) {
             System.err.println("Energy plan(" + energyPlanId + ") deactivation for customer : " + customerId + " Failed");
         }
     }
@@ -89,8 +83,8 @@ public class ActivateEnergyPlanForCustomerTest {
         plan.setSwapCount(0);
         plan.setPlanTotalValue(0);
 
-        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(plan);
-        assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
+        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(plan).jsonPath().getInt("response.id");
+        assertNotEquals(energyPlanId, -1, "Energy plan creation failed");
 
         // test plan activation
         ActivatePlanForCustomer activateReq = new ActivatePlanForCustomer(energyPlanId, customerId);
@@ -126,7 +120,7 @@ public class ActivateEnergyPlanForCustomerTest {
         plan.setSwapCount(0);
         plan.setPlanTotalValue(0);
 
-        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(plan);
+        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(plan).jsonPath().getInt("response.id");
         assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
 
         // test plan activation
@@ -162,7 +156,7 @@ public class ActivateEnergyPlanForCustomerTest {
         plan.setSwapCount(0);
         plan.setPlanTotalValue(0);
 
-        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(plan);
+        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(plan).jsonPath().getInt("response.id");
         assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
 
         // test plan activation
@@ -177,10 +171,10 @@ public class ActivateEnergyPlanForCustomerTest {
             .body("success", equalTo(true));
 
         activateReq.setPlanId(260);
-        boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(activateReq);
+        boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(activateReq).jsonPath().getBoolean("success");
         assertFalse(planActivated, "Frist Energy plan activation failed");
 
-        if (!EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(customerId)) {
+        if (!EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(customerId).jsonPath().getBoolean("success")) {
             System.err.println("Energy plan(" + energyPlanId + ") deactivation for customer : " + customerId + " Failed");
         }
     }

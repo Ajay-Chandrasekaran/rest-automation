@@ -86,7 +86,7 @@ public class ActivateDeactivateEnergyPlanTest {
         reqBody.setSwapCount(0);
         reqBody.setPlanTotalValue(totalValue);
 
-        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(reqBody);
+        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(reqBody).jsonPath().getInt("response.id");
         assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
 
         DeactivateEnergyPlanRequest deactivateReq = new DeactivateEnergyPlanRequest();
@@ -139,7 +139,7 @@ public class ActivateDeactivateEnergyPlanTest {
         reqBody.setSwapCount(0);
         reqBody.setPlanTotalValue(totalValue);
 
-        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(reqBody);
+        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(reqBody).jsonPath().getInt("response.id");
         assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
 
         DeactivateEnergyPlanRequest deactivateReq = new DeactivateEnergyPlanRequest();
@@ -171,7 +171,7 @@ public class ActivateDeactivateEnergyPlanTest {
         reqBody.setSwapCount(0);
         reqBody.setPlanTotalValue(totalValue);
 
-        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(reqBody);
+        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(reqBody).jsonPath().getInt("response.id");
         assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
 
         DeactivateEnergyPlanRequest deactivateReq = new DeactivateEnergyPlanRequest();
