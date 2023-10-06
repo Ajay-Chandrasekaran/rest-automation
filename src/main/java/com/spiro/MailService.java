@@ -16,6 +16,7 @@ import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 
+
 public final class MailService {
 
     private static final Logger logger = LogManager.getLogger();
