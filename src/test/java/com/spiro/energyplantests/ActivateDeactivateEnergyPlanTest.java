@@ -4,16 +4,21 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
+import static org.testng.Assert.fail;
 
 import java.io.IOException;
 import java.time.LocalDate;
 
 import org.apache.http.HttpStatus;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 
 import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.DeactivateEnergyPlanRequest;
@@ -24,12 +29,8 @@ import com.spiro.utils.ObjectAndJsonUtils;
 
 public class ActivateDeactivateEnergyPlanTest {
 
+    private static final Logger logger = LogManager.getLogger();
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
-
-    @BeforeClass
-    public static void setup() {
-        EnergyPlanTestHelper.init();
-    }
 
     /*
      * [PATCH] /energy-plans/{{energy-plan-id}}/status
@@ -38,15 +39,19 @@ public class ActivateDeactivateEnergyPlanTest {
      */
     @Test
     public void deactivatePlanWithCustomerTest() {
-        // TODO: Find better way to reuse energy plan
         String customerId = CsvUtils.getNextCustomer();
         int energyPlanId = 266;
 
         try {
             // Activate a plan for customer
             ActivatePlanForCustomer activationReq = new ActivatePlanForCustomer(energyPlanId, customerId);
-            boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(activationReq);
-            assertTrue(planActivated, "Energy plan activatoin failed for customer: " + customerId);
+            Response planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(activationReq);
+
+            if (planActivated.jsonPath().getInt("response.status") != HttpStatus.SC_CREATED) {
+                logger.error("Activation of plan {} failed for customer {}", energyPlanId, customerId);
+                fail("Energy plan activation failed for customer " + customerId);
+            }
+            logger.info("Activated plan {} for customer {}", energyPlanId, customerId);
 
             // Test deactivation
             DeactivateEnergyPlanRequest deactivateReq = new DeactivateEnergyPlanRequest();
@@ -81,7 +86,7 @@ public class ActivateDeactivateEnergyPlanTest {
         reqBody.setSwapCount(0);
         reqBody.setPlanTotalValue(totalValue);
 
-        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(reqBody);
+        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(reqBody).jsonPath().getInt("response.id");
         assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
 
         DeactivateEnergyPlanRequest deactivateReq = new DeactivateEnergyPlanRequest();
@@ -134,7 +139,7 @@ public class ActivateDeactivateEnergyPlanTest {
         reqBody.setSwapCount(0);
         reqBody.setPlanTotalValue(totalValue);
 
-        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(reqBody);
+        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(reqBody).jsonPath().getInt("response.id");
         assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
 
         DeactivateEnergyPlanRequest deactivateReq = new DeactivateEnergyPlanRequest();
@@ -166,7 +171,7 @@ public class ActivateDeactivateEnergyPlanTest {
         reqBody.setSwapCount(0);
         reqBody.setPlanTotalValue(totalValue);
 
-        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(reqBody);
+        int energyPlanId = EnergyPlanTestHelper.createEnergyPlan(reqBody).jsonPath().getInt("response.id");
         assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
 
         DeactivateEnergyPlanRequest deactivateReq = new DeactivateEnergyPlanRequest();

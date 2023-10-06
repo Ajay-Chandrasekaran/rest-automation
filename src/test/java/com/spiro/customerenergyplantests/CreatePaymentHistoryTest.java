@@ -5,7 +5,6 @@ import static org.testng.Assert.assertFalse;
 
 import java.io.IOException;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.spiro.entities.ActivatePlanForCustomer;
@@ -18,11 +17,6 @@ public class CreatePaymentHistoryTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
 
-    @BeforeClass
-    public static void setup() throws IOException {
-        EnergyPlanTestHelper.init();
-    }
-
     @Test
     public void createPaymentForValidCustomerTest() throws IOException {
         String customerId = CsvUtils.getNextCustomer();
@@ -32,7 +26,7 @@ public class CreatePaymentHistoryTest {
         try {
             // Activate a plan for customer
             ActivatePlanForCustomer activationReq = new ActivatePlanForCustomer(energyPlanId, customerId);
-            boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(activationReq);
+            boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(activationReq).jsonPath().getBoolean("success");
             assertTrue(planActivated, "Energy plan activatoin failed for customer: " + customerId);
 
             // Make payment
@@ -40,7 +34,7 @@ public class CreatePaymentHistoryTest {
             payment.setOfferId(energyPlanId);
             payment.setCustomerId(customerId);
             payment.setSettlementAmount(settlementAmount);
-            boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(payment);
+            boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(payment).jsonPath().getBoolean("[0].success");
             assertTrue(paymentSuccess, "Payment failed");
         } finally {
             EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(customerId);
@@ -59,7 +53,7 @@ public class CreatePaymentHistoryTest {
         payment.setCustomerId(customerId);
         payment.setSettlementAmount(settlementAmount);
 
-        boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(payment);
+        boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(payment).jsonPath().getBoolean("[0].success");
 
         assertFalse(paymentSuccess, "Payment history created for customer without a energy plan");
     }

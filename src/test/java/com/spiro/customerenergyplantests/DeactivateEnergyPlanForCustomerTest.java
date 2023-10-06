@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 import org.apache.http.HttpStatus;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.spiro.entities.ActivatePlanForCustomer;
@@ -23,11 +22,6 @@ public class DeactivateEnergyPlanForCustomerTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
 
-    @BeforeClass
-    public static void setup() throws IOException {
-        EnergyPlanTestHelper.init();
-    }
-
     @Test
     public void deactivateEnergyPlanForCustomerTest() throws IOException {
         String customerId = CsvUtils.getNextCustomer();
@@ -40,11 +34,11 @@ public class DeactivateEnergyPlanForCustomerTest {
         reqBody.setSwapCount(0);
         reqBody.setPlanTotalValue(0);
 
-        int planId = EnergyPlanTestHelper.createEnergyPlan(reqBody);
+        int planId = EnergyPlanTestHelper.createEnergyPlan(reqBody).jsonPath().getInt("response.id");
         assertNotEquals(-1, planId, "Error while creating energy plan");
 
         ActivatePlanForCustomer activateReq = new ActivatePlanForCustomer(planId, customerId);
-        boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(activateReq);
+        boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(activateReq).jsonPath().getBoolean("success");
         assertTrue(planActivated, "Error while activating plan for customer: " + customerId);
 
         given()
@@ -69,12 +63,12 @@ public class DeactivateEnergyPlanForCustomerTest {
         reqBody.setSwapCount(0);
         reqBody.setPlanTotalValue(totalValue);
 
-        int planId = EnergyPlanTestHelper.createEnergyPlan(reqBody);
+        int planId = EnergyPlanTestHelper.createEnergyPlan(reqBody).jsonPath().getInt("response.id");
         assertNotEquals(-1, planId, "Error while creating energy plan");
 
         try {
             ActivatePlanForCustomer activateReq = new ActivatePlanForCustomer(planId, customerId);
-            boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(activateReq);
+            boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(activateReq).jsonPath().getBoolean("success");
             assertTrue(planActivated, "Error while activating plan for customer: " + customerId);
 
             given()
@@ -89,8 +83,8 @@ public class DeactivateEnergyPlanForCustomerTest {
             payment.setOfferId(planId);
             payment.setCustomerId(customerId);
             payment.setSettlementAmount(totalValue);
-            boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(payment);
-            if (!EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(customerId) || !paymentSuccess) {
+            boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(payment).jsonPath().getBoolean("[0].success");
+            if (!EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(customerId).jsonPath().getBoolean("success") || !paymentSuccess) {
                 System.err.println("Energy plan(" + planId + ") deactivation for customer : " + customerId + " Failed");
             }
         }
@@ -109,12 +103,12 @@ public class DeactivateEnergyPlanForCustomerTest {
         reqBody.setSwapCount(0);
         reqBody.setPlanTotalValue(totalValue);
 
-        int planId = EnergyPlanTestHelper.createEnergyPlan(reqBody);
+        int planId = EnergyPlanTestHelper.createEnergyPlan(reqBody).jsonPath().getInt("response.id");
         assertNotEquals(-1, planId, "Error while creating energy plan");
 
         try {
             ActivatePlanForCustomer activateReq = new ActivatePlanForCustomer(planId, customerId);
-            boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(activateReq);
+            boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(activateReq).jsonPath().getBoolean("success");
             assertTrue(planActivated, "Error while activating plan for customer: " + customerId);
 
             given()
@@ -125,7 +119,7 @@ public class DeactivateEnergyPlanForCustomerTest {
                 .statusCode(HttpStatus.SC_OK)
                 .body("success", equalTo(true));
         } finally {
-            if (!EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(customerId)) {
+            if (!EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(customerId).jsonPath().getBoolean("success")) {
                 System.err.println("Energy plan(" + planId + ") deactivation for customer : " + customerId + " Failed");
             }
         }

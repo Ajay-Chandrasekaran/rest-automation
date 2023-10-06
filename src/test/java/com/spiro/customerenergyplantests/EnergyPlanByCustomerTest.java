@@ -4,31 +4,12 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
-import java.io.IOException;
-
 import org.apache.http.HttpStatus;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import io.restassured.RestAssured;
-
-import com.spiro.helpers.EnergyPlanTestHelper;
 import com.spiro.utils.CsvUtils;
 
 public class EnergyPlanByCustomerTest {
-
-    @BeforeClass
-    public static void setup() throws IOException {
-
-        EnergyPlanTestHelper.init();
-        RestAssured.basePath = "/customers";
-    }
-
-    @AfterClass
-    public static void teardown() {
-        RestAssured.reset();
-    }
 
     /**
      * [GET] customers/{{customer-id}}/energy-plans

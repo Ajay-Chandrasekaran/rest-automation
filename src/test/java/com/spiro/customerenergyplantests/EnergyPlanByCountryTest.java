@@ -8,31 +8,17 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 import org.apache.http.HttpStatus;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 import com.spiro.entities.EnergyPlan;
 import com.spiro.entities.EnergyPlanOffer;
-import com.spiro.helpers.EnergyPlanTestHelper;
 import com.spiro.utils.ObjectAndJsonUtils;
 
 public class EnergyPlanByCountryTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
-
-    @BeforeClass
-    public static void setup() throws IOException {
-        EnergyPlanTestHelper.init();
-    }
-
-    @AfterClass
-    public static void teardown() {
-        RestAssured.reset();
-    }
 
     /**
      * API: [GET]/customers/{customer-id}/{country-code}

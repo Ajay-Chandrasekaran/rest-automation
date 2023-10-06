@@ -3,32 +3,16 @@ package com.spiro.energyplantests;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 
-import java.io.IOException;
 import java.time.LocalDate;
 
 import org.apache.http.HttpStatus;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 import com.spiro.entities.EnergyPlan;
-import com.spiro.helpers.EnergyPlanTestHelper;
 
 
 public class GetEnergyPlanByIdTest {
-
-    @BeforeClass
-    public static void setup() throws IOException {
-        EnergyPlanTestHelper.init();
-    }
-
-    @AfterClass
-    public static void teardown() {
-        RestAssured.reset();
-    }
 
     /**
      * [GET] /energy-plans/{energy-plan-id}
