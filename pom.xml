@@ -46,12 +46,7 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.skyscreamer</groupId>
-            <artifactId>jsonassert</artifactId>
-            <version>1.5.1</version>
-            <scope>test</scope>
-        </dependency>
+      
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -65,7 +60,7 @@
             <version>1.18.28</version>
             <scope>provided</scope>
         </dependency>
-    </dependencies>
+     </dependencies>
 
     <build>
         <plugins>

@@ -18,14 +18,13 @@ public class PropertiesReader {
         }
         return reader;
     }
-    
+
     private PropertiesReader() throws IOException {
         FileInputStream file = new FileInputStream(PATH);
         this.props = new Properties();
         this.props.load(file);
         file.close();
-        setEnv();
-    }    
+    }
 
     public int getPort() {
         return port;
@@ -35,19 +34,22 @@ public class PropertiesReader {
         return host;
     }
 
-    private void setEnv() {
-        String landscape = this.props.getProperty("test.landscape");
+    public void setEnv(String landscape) {
+       // String landscape = this.props.getProperty("test.landscape");
 
         switch (landscape) {
-            case "uat": {
-                this.port = Integer.parseInt(this.props.getProperty("uat.port"));
-                this.host = this.props.getProperty("uat.host");
-                break;
-            }
-            default: {
-                this.port = Integer.parseInt(this.props.getProperty("dev.port"));
-                this.host = this.props.getProperty("dev.host");
-            }
+        case "uat": {
+            this.port = Integer.parseInt(this.props.getProperty("uat.port"));
+            this.host = this.props.getProperty("uat.host");
+            break;
+        }
+        default: {
+            this.port = Integer.parseInt(this.props.getProperty("dev.port"));
+            this.host = this.props.getProperty("dev.host");
+        }
         }
     }
+    
+    
+ 
 }

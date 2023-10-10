@@ -33,6 +33,7 @@ public class ActivateDeactivateEnergyPlanTest {
     @BeforeAll
     public static void setup() throws IOException {
         PropertiesReader propReader = PropertiesReader.getReader();
+        propReader.setEnv("dev");
         RestAssured.baseURI = propReader.getHost();
         RestAssured.port = propReader.getPort();
     }

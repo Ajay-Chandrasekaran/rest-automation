@@ -18,6 +18,7 @@ import com.spiro.utils.PropertiesReader;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
+
 public class CreatePaymentHistoryTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
@@ -25,6 +26,7 @@ public class CreatePaymentHistoryTest {
     @BeforeAll
     public static void setup() throws IOException {
         PropertiesReader propReader = PropertiesReader.getReader();
+        propReader.setEnv("dev");
         RestAssured.baseURI = propReader.getHost();
         RestAssured.port = propReader.getPort();
     }

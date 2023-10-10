@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ObjectAndJsonUtils {
-
     public static JsonNode getJsonNodeFromFile(String path) throws IOException {
         JsonNode node = null;
 
@@ -33,11 +32,10 @@ public class ObjectAndJsonUtils {
         T obj = oMapper.readValue(f, classType);
         return obj;
     }
-    
+
     public static String UUIDgenerator() {
         UUID randomUUID = UUID.randomUUID();
         String string = randomUUID.toString();
-
         return string;
     }
 }

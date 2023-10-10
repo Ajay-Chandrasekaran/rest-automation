@@ -1,9 +1,9 @@
 package com.spiro.customerenergyplantests;
 
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -14,16 +14,16 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-import io.restassured.response.Response;
-
 import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.EnergyPlan;
 import com.spiro.entities.EnergyPlanResponse1;
 import com.spiro.helpers.EnergyPlanTestHelper;
 import com.spiro.utils.ObjectAndJsonUtils;
 import com.spiro.utils.PropertiesReader;
+
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 
 
 public class ActivateEnergyPlanForCustomerTest {
@@ -33,6 +33,7 @@ public class ActivateEnergyPlanForCustomerTest {
     @BeforeAll
     public static void setup() throws IOException {
         PropertiesReader propReader = PropertiesReader.getReader();
+        propReader.setEnv("dev");
         RestAssured.baseURI = propReader.getHost();
         RestAssured.port = propReader.getPort();
     }
@@ -167,6 +168,7 @@ public class ActivateEnergyPlanForCustomerTest {
     public void activateEnergyPlanForCustomerWithPlanTest() throws IOException {
         String customerId = "1668424491-a774-4c6b-8248-744324257113";
 
+       
         String startDate = LocalDate.now().toString();
         String endDate = LocalDate.now().plusDays(5).toString();
 

@@ -33,6 +33,7 @@ public class EnergyPlanRemainingAmountTest {
     @BeforeAll
     public static void setup() throws IOException {
         PropertiesReader propReader = PropertiesReader.getReader();
+        propReader.setEnv("dev");
         RestAssured.baseURI = propReader.getHost();
         RestAssured.port = propReader.getPort();
     }
@@ -97,5 +98,7 @@ public class EnergyPlanRemainingAmountTest {
         .then()
             .statusCode(HttpStatus.SC_BAD_REQUEST)
             .body("success", equalTo(false));
+        
+      
     }
 }
