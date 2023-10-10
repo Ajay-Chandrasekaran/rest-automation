@@ -29,3 +29,5 @@ target/
 # Eclipse files
 .classpath
 .settings/
+.factorypath
+.project

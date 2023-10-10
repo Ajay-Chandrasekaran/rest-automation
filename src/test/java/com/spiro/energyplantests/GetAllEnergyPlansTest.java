@@ -7,30 +7,12 @@ import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInC
 import java.io.IOException;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import io.restassured.RestAssured;
-
-import com.spiro.utils.PropertiesReader;
+import org.testng.annotations.Test;
 
 
 public class GetAllEnergyPlansTest {
 
     private final String SCHEMAPATH = "jsonschemas/";
-
-    @BeforeAll
-    public static void setup() throws IOException {
-        PropertiesReader propReader = PropertiesReader.getReader();
-        RestAssured.baseURI = propReader.getHost();
-        RestAssured.port = propReader.getPort();
-    }
-
-    @AfterAll
-    public static void teardown() {
-        RestAssured.reset();
-    }
 
     /**
      * [GET] /energy-plans

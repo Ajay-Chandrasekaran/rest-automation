@@ -1,0 +1,51 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+            "label": "Clean",
+            "command":[
+                "mvn clean"
+            ]
+		},
+		{
+			"type": "shell",
+            "label": "Compile",
+            "command":[
+                "mvn compile compiler:testCompile"
+            ]
+		},
+		{
+			"type": "shell",
+            "label": "Test",
+            "command":[
+                "mvn test"
+            ]
+		},
+		{
+			"type": "shell",
+            "label": "Mail",
+            "command":[
+                "mvn exec:java"
+            ]
+		},
+        {
+			"type": "shell",
+            "label": "Full",
+            "dependsOn":[
+                "Clean",
+                "Compile",
+                "Test",
+                "Mail"
+            ],
+            "dependsOrder": "sequence"
+		},
+        {
+			"type": "shell",
+            "label": "Run test",
+            "command":[
+                "mvn clean compile compiler:testCompile test"
+            ]
+		}
+	]
+}

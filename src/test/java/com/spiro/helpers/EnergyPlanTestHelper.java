@@ -2,7 +2,12 @@ package com.spiro.helpers;
 
 import static io.restassured.RestAssured.given;
 
-import java.util.ArrayList;
+import org.apache.http.HttpStatus;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 
 import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.CustomerByIdEnergyPlanResponse;
@@ -18,118 +23,96 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
 
-
 public class EnergyPlanTestHelper {   
 
-    public static EnergyPlanResponse1 createEnergyPlan(String host, int port, EnergyPlan plan) {
-    
-        String URL = host + ":" + port + "/energy-plans";
-      return given()
+    private static final Logger logger = LogManager.getLogger();
+
+    public static Response createEnergyPlan(EnergyPlan plan) {
+        String URL = "/energy-plans";
+        logger.info("Creating energy plan - [POST] {}", URL);
+
+        return given()
             .header("Content-Type", ContentType.JSON)
             .body(plan)
         .when()
             .post(URL)
-            .then().extract().as(EnergyPlanResponse1.class);
+        .then()
+            .statusCode(HttpStatus.SC_CREATED)
+        .extract().response();
     }
 
-    public static Response activateEnergyPlanForCustomer(String host, int port, ActivatePlanForCustomer req) {
+    public static Response activateEnergyPlanForCustomer(ActivatePlanForCustomer req) {
+        String URL = "/customers/energy-plans";
+        logger.info("Activating energy plan for customer - [PUT] {}", URL);
         
-        String URL = host + ":" + port + "/customers/energy-plans";
-      
         return given()
             .contentType(ContentType.JSON)
             .body(req)
         .when()
             .put(URL)
-        .then()
-        .extract().response();
-
+        .then().extract().response();
     }
 
-    public static Response deactivateEnergyPlanForCustomer(String host, int port, String customerId) {
-     
-        String URL = host + ":" + port + "/customers/{customer-id}/energy-plans";
+    public static Response deactivateEnergyPlanForCustomer(String customerId) {
+        String URL = "/customers/{customer-id}/energy-plans";
+        logger.info("Deactivating energy plan for customer - [PATCH] {}", URL.replace("{customer-id}", customerId));
 
-       return given()
+        return given()
             .pathParam("customer-id", customerId)
         .when()
             .patch(URL)
-        .then()
-        .extract().response();
-
-       
+        .then().extract().response();
     }
-    
-    /**
-     * 
-     * @param host
-     * @param port
-     * @param payment
-     * @return
-     */
-    public static Response createPaymentHistory(String host, int port, Payment payment) {
-       
-        String URL = host + ":" + port + "/customers/payments/history";
-       
-        ArrayList<Payment> paymentList = new ArrayList<>();
-        paymentList.add(payment);
-     
-      
-      return given()
+
+    public static Response createPaymentHistory(Payment payment) {
+        String URL = "/customers/payments/history";
+        logger.info("Creating payment history - [POST] {}", URL);
+
+        PaymentHistoryList history = new PaymentHistoryList();
+        history.getHistory().add(payment);
+
+        return given()
+            .body(history.getHistory())
             .contentType(ContentType.JSON)
             .body(paymentList)
         .when()
             .post(URL)
-        .then()
-            .extract().response();
-
+        .then().extract().response();
     }
 
-    public static void createSwapHistory(String host,int port,SwapsHistory swap) {
+    public static Response createSwapHistory(SwapHistory swap) {
+        String URL = "/customers/swaps/history";
+        logger.info("Creating swap history - [POST] {}", URL);
 
-      String URL = host + ":" + port + "/customers/swaps/history";
-      
-      RestAssured.given()
-             .accept(ContentType.JSON)
-             .contentType("application/json")
-             .body(swap)
+        return given()
+            .accept(ContentType.JSON)
+            .contentType("application/json")
+            .body(swap)
         .when()
-             .post(URL)
-        .then()
-             .extract().as(SwapHistoryResponse.class);
-
-
+            .post(URL)
+        .then().extract().response();
     }
 
-    public static float getRemainingBalance(String host,int port,String customerId) {
+    public static Response getRemainingBalance(String customerId) {
+        String URL = "/customers/{customer-id}/energy-plan-remaining-amount/";
+        logger.info("Geting remaining balance - [POST] {}", URL.replace("{customer-id}", customerId));
 
-        String URL=host+ ":" + port + "/customers/{customer-id}/energy-plans/";
-     float remainingBalance =
-             given().accept(ContentType.JSON)
-                    .pathParam("customer-id", customerId)
-             .when()
-                    .get(URL)
-             .then()
-                    .extract()
-                    .jsonPath()
-                    .getFloat("response.remainingDueAmount");
-            return remainingBalance;
-
+        return given()
+            .accept(ContentType.JSON)
+            .pathParam("customer-id", customerId)
+        .when()
+            .get(URL)
+        .then().extract().response();
     }
 
-    public static CustomerByIdEnergyPlanResponse getCutomerById(String host,int port,String customerId) {
-        String URL=host+ ":" + port + "/customers/{customer-id}/energy-plans";
+    public static Response getEnergyPlanOfCutomerById(String customerId) {
+        String URL = "/customers/{customer-id}/energy-plans";
+        logger.info("Getting energy plan of customer by Id - [GET] {}", URL.replace("{customer-id}", customerId));
 
-         CustomerByIdEnergyPlanResponse customerResponse = given()
-                .pathParam("customer-id", customerId)
-            .when()
-                .get(URL)
-            .then()
-                .extract()
-                .as(CustomerByIdEnergyPlanResponse.class);
-    
-         return customerResponse;
+        return given()
+            .pathParam("customer-id", customerId)
+        .when()
+            .get(URL)
+        .then().extract().response();
     }
 }
-
-

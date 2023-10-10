@@ -2,40 +2,23 @@ package com.spiro.customerenergyplantests;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertEquals;
 
 import java.io.IOException;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import io.restassured.RestAssured;
-import io.restassured.response.Response;
+import org.testng.annotations.Test;
 
 import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.Payment;
 import com.spiro.helpers.EnergyPlanTestHelper;
+import com.spiro.utils.CsvUtils;
 import com.spiro.utils.ObjectAndJsonUtils;
-import com.spiro.utils.PropertiesReader;
 
 public class EnergyPlanPaymentHistoryTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
-
-    @BeforeAll
-    public static void setup() throws IOException {
-        PropertiesReader propReader = PropertiesReader.getReader();
-        RestAssured.baseURI = propReader.getHost();
-        RestAssured.port = propReader.getPort();
-    }
-
-    @AfterAll
-    public static void teardown() {
-        RestAssured.reset();
-    }
 
     /**
      * [GET] customers/payment-history/{customer-id}
@@ -46,7 +29,7 @@ public class EnergyPlanPaymentHistoryTest {
      */
     @Test
     public void getPaymentHistoryOfInvalidCustomerTest() {
-        String customerId = "1692455325-e43b-4608-8d8a-29458e6dbe69";
+        String customerId = CsvUtils.getNextCustomer();
 
         given().pathParam("customer-id", customerId).when().get("/customers/{customer-id}/payment-history/").then()
                 .statusCode(HttpStatus.SC_BAD_REQUEST).body("success", equalTo(false));
@@ -62,16 +45,15 @@ public class EnergyPlanPaymentHistoryTest {
      */
      @Test
     public void getPaymentHistoryOfValidCustomerTest() throws IOException {
-        String customerId = "1683292260-0bf8-4bdf-aad0-5c4fc62cb619";
+        String customerId = CsvUtils.getNextCustomer();
         int energyPlanId = 260;
         int settlementAmount = 1000;
 
         try {
             // Activate a plan for customer
             ActivatePlanForCustomer activationReq = new ActivatePlanForCustomer(energyPlanId, customerId);
-            Response planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(RestAssured.baseURI,
-                    RestAssured.port, activationReq);
-            assertTrue(planActivated.jsonPath().getBoolean("success"), "Energy plan activatoin failed for customer: " + customerId);
+            boolean planActivated = EnergyPlanTestHelper.activateEnergyPlanForCustomer(activationReq).jsonPath().getBoolean("success");
+            assertTrue(planActivated, "Energy plan activatoin failed for customer: " + customerId);
 
             // Make payment
             Payment payment = ObjectAndJsonUtils.createObjectFromJsonFile(RESOURCEPATH + "create-payment.json",
@@ -79,9 +61,8 @@ public class EnergyPlanPaymentHistoryTest {
             payment.setOfferId(energyPlanId);
             payment.setCustomerId(customerId);
             payment.setSettlementAmount(settlementAmount);
-            Response paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(RestAssured.baseURI, RestAssured.port,
-                    payment);
-            assertTrue(paymentSuccess.jsonPath().getBoolean("success"), "Payment failed");
+            boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(payment).jsonPath().getBoolean("[0].success");
+            assertTrue(paymentSuccess, "Payment failed");
 
             // Payment should reflect in history
             Payment paid = given().pathParam("customer-id", customerId).when()
@@ -90,7 +71,7 @@ public class EnergyPlanPaymentHistoryTest {
 
             assertEquals(payment, paid);
         } finally {
-            EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(RestAssured.baseURI, RestAssured.port, customerId);
+            EnergyPlanTestHelper.deactivateEnergyPlanForCustomer(customerId);
         }
     }
 }

@@ -4,33 +4,12 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
-import java.io.IOException;
-
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.Test;
 
-import io.restassured.RestAssured;
-
-import com.spiro.utils.PropertiesReader;
+import com.spiro.utils.CsvUtils;
 
 public class EnergyPlanByCustomerTest {
-
-    private static PropertiesReader propReader;
-
-    @BeforeAll
-    public static void setup() throws IOException {
-        propReader = PropertiesReader.getReader();
-        RestAssured.baseURI = propReader.getHost();
-        RestAssured.port = propReader.getPort();
-        RestAssured.basePath = "/customers";
-    }
-
-    @AfterAll
-    public static void teardown() {
-        RestAssured.reset();
-    }
 
     /**
      * [GET] customers/{{customer-id}}/energy-plans
@@ -56,7 +35,7 @@ public class EnergyPlanByCustomerTest {
      */
     @Test
     public void customerWithoutEnergyPlanTest() {
-        String customerId = "1692701797-5e8a-4845-afba-06078001c492";
+        String customerId = CsvUtils.getNextCustomer();
 
         given()
             .pathParam("customer-id", customerId)
@@ -75,7 +54,7 @@ public class EnergyPlanByCustomerTest {
      */
     @Test
     public void customerWithEnergyPlanTest() {
-        String customerId = "1692211922-b51c-470f-89ae-16d4209123a8";
+        String customerId = CsvUtils.getNextCustomer();
 
         given()
             .pathParam("customer-id", customerId)
