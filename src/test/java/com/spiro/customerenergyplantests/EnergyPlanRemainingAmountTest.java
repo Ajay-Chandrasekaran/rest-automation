@@ -13,6 +13,7 @@ import org.testng.annotations.Test;
 
 import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.EnergyPlan;
+import com.spiro.entities.EnergyPlanResponse1;
 import com.spiro.entities.Payment;
 import com.spiro.utils.CsvUtils;
 import com.spiro.utils.ObjectAndJsonUtils;
@@ -44,7 +45,7 @@ public class EnergyPlanRemainingAmountTest {
         boolean activationSuccess = EnergyPlanTestHelper.activateEnergyPlanForCustomer(activateReq).jsonPath().getBoolean("success");
         assertTrue(activationSuccess, "Energy plan activation failed");
 
-        // validate remaingin amount after assigning plan
+        // validate remaining amount after assigning plan
         given()
             .pathParam("customer-id", customerId)
         .when()
@@ -54,9 +55,9 @@ public class EnergyPlanRemainingAmountTest {
             .body("response.remainingDueAmount", equalTo((float)totalValue));
 
         // ** Clean up after test **
-        // pay remanining amount (pre conditoin for deactivation)
+        // pay remaining amount (pre conditoin for deactivation)
         Payment payment = ObjectAndJsonUtils.createObjectFromJsonFile(RESOURCEPATH + "create-payment.json", Payment.class);
-        payment.setOfferId(energyPlanId);
+        payment.setOfferId(planId);
         payment.setCustomerId(customerId);
         payment.setSettlementAmount(totalValue);
         boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(payment).jsonPath().getBoolean("success");

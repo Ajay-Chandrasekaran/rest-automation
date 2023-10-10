@@ -13,6 +13,7 @@ import com.spiro.helpers.EnergyPlanTestHelper;
 import com.spiro.utils.CsvUtils;
 import com.spiro.utils.ObjectAndJsonUtils;
 
+
 public class CreatePaymentHistoryTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
@@ -55,6 +56,6 @@ public class CreatePaymentHistoryTest {
 
         boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(payment).jsonPath().getBoolean("[0].success");
 
-        assertFalse(paymentSuccess, "Payment history created for customer without a energy plan");
+        assertFalse(paymentSuccess.jsonPath().getBoolean("success"), "Payment history created for customer without a energy plan");
     }
 }

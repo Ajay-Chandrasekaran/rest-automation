@@ -13,16 +13,19 @@ import org.testng.annotations.Test;
 
 import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.EnergyPlan;
+import com.spiro.entities.EnergyPlanResponse1;
 import com.spiro.entities.Payment;
 import com.spiro.helpers.EnergyPlanTestHelper;
 import com.spiro.utils.CsvUtils;
 import com.spiro.utils.ObjectAndJsonUtils;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DeactivateEnergyPlanForCustomerTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
 
     @Test
+    @Order(1)
     public void deactivateEnergyPlanForCustomerTest() throws IOException {
         String customerId = CsvUtils.getNextCustomer();
         String startDate = LocalDate.now().toString();
@@ -51,6 +54,7 @@ public class DeactivateEnergyPlanForCustomerTest {
     }
 
     @Test
+    @Order(3)
     public void deactivateEnergyPlanForCustomerWithDueTest() throws IOException {
         String customerId = CsvUtils.getNextCustomer();
         String startDate = LocalDate.now().toString();
@@ -80,7 +84,7 @@ public class DeactivateEnergyPlanForCustomerTest {
                 .body("success", equalTo(false));
         } finally {
             Payment payment = ObjectAndJsonUtils.createObjectFromJsonFile(RESOURCEPATH + "create-payment.json", Payment.class);
-            payment.setOfferId(planId);
+            payment.setOfferId(planId.getResponse().getId());
             payment.setCustomerId(customerId);
             payment.setSettlementAmount(totalValue);
             boolean paymentSuccess = EnergyPlanTestHelper.createPaymentHistory(payment).jsonPath().getBoolean("[0].success");
@@ -91,6 +95,7 @@ public class DeactivateEnergyPlanForCustomerTest {
     }
 
     @Test
+    @Order(2)
     public void deactivateExpiredEnergyPlanTest() throws IOException {
         String customerId = CsvUtils.getNextCustomer();
         String startDate = LocalDate.now().minusDays(5).toString();

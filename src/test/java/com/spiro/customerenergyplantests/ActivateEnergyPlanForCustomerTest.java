@@ -12,9 +12,11 @@ import org.apache.http.HttpStatus;
 import org.testng.annotations.Test;
 
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 
 import com.spiro.entities.ActivatePlanForCustomer;
 import com.spiro.entities.EnergyPlan;
+import com.spiro.entities.EnergyPlanResponse1;
 import com.spiro.helpers.EnergyPlanTestHelper;
 import com.spiro.utils.CsvUtils;
 import com.spiro.utils.ObjectAndJsonUtils;
@@ -48,7 +50,7 @@ public class ActivateEnergyPlanForCustomerTest {
         assertNotEquals(energyPlanId, -1, "Energy plan creation failed");
 
         // test plan activation
-        ActivatePlanForCustomer activateReq = new ActivatePlanForCustomer(energyPlanId, customerId);
+        ActivatePlanForCustomer activateReq = new ActivatePlanForCustomer(energyPlanId.getResponse().getId(), customerId);
         given()
             .contentType(ContentType.JSON)
             .body(activateReq)
@@ -87,7 +89,7 @@ public class ActivateEnergyPlanForCustomerTest {
         assertNotEquals(energyPlanId, -1, "Energy plan creation failed");
 
         // test plan activation
-        ActivatePlanForCustomer activateReq = new ActivatePlanForCustomer(energyPlanId, customerId);
+        ActivatePlanForCustomer activateReq = new ActivatePlanForCustomer(energyPlanId.getResponse().getId(), customerId);
         given()
             .contentType(ContentType.JSON)
             .body(activateReq)
@@ -124,7 +126,7 @@ public class ActivateEnergyPlanForCustomerTest {
         assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
 
         // test plan activation
-        ActivatePlanForCustomer activateReq = new ActivatePlanForCustomer(energyPlanId, customerId);
+        ActivatePlanForCustomer activateReq = new ActivatePlanForCustomer(energyPlanId.getResponse().getId(), customerId);
         given()
             .contentType(ContentType.JSON)
             .body(activateReq)
@@ -160,7 +162,7 @@ public class ActivateEnergyPlanForCustomerTest {
         assertNotEquals(-1, energyPlanId, "Energy plan creation failed");
 
         // test plan activation
-        ActivatePlanForCustomer activateReq = new ActivatePlanForCustomer(energyPlanId, customerId);
+        ActivatePlanForCustomer activateReq = new ActivatePlanForCustomer(energyPlanId.getResponse().getId(), customerId);
         given()
             .contentType(ContentType.JSON)
             .body(activateReq)

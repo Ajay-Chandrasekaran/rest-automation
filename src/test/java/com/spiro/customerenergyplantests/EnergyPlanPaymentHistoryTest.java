@@ -16,7 +16,6 @@ import com.spiro.helpers.EnergyPlanTestHelper;
 import com.spiro.utils.CsvUtils;
 import com.spiro.utils.ObjectAndJsonUtils;
 
-
 public class EnergyPlanPaymentHistoryTest {
 
     private final String RESOURCEPATH = "src/test/resources/customerenergyplantests/";
@@ -32,24 +31,19 @@ public class EnergyPlanPaymentHistoryTest {
     public void getPaymentHistoryOfInvalidCustomerTest() {
         String customerId = CsvUtils.getNextCustomer();
 
-        given()
-            .pathParam("customer-id", customerId)
-        .when()
-            .get("/customers/payment-history/{customer-id}")
-        .then()
-            .statusCode(HttpStatus.SC_BAD_REQUEST)
-            .body("success", equalTo(false));
+        given().pathParam("customer-id", customerId).when().get("/customers/{customer-id}/payment-history/").then()
+                .statusCode(HttpStatus.SC_BAD_REQUEST).body("success", equalTo(false));
     }
 
     /**
      * [GET] customers/payment-history/{customer-id}
      *
-     * Assign an energy plan to customer, makes a payment and verifies
-     * the payment history.
+     * Assign an energy plan to customer, makes a payment and verifies the payment
+     * history.
      *
      * Expected: Payment made should be retrieved in payment history
      */
-    // @Test
+     @Test
     public void getPaymentHistoryOfValidCustomerTest() throws IOException {
         String customerId = CsvUtils.getNextCustomer();
         int energyPlanId = 260;
@@ -62,7 +56,8 @@ public class EnergyPlanPaymentHistoryTest {
             assertTrue(planActivated, "Energy plan activatoin failed for customer: " + customerId);
 
             // Make payment
-            Payment payment = ObjectAndJsonUtils.createObjectFromJsonFile(RESOURCEPATH + "create-payment.json", Payment.class);
+            Payment payment = ObjectAndJsonUtils.createObjectFromJsonFile(RESOURCEPATH + "create-payment.json",
+                    Payment.class);
             payment.setOfferId(energyPlanId);
             payment.setCustomerId(customerId);
             payment.setSettlementAmount(settlementAmount);
@@ -70,14 +65,9 @@ public class EnergyPlanPaymentHistoryTest {
             assertTrue(paymentSuccess, "Payment failed");
 
             // Payment should reflect in history
-            Payment paid = given()
-                .pathParam("customer-id", customerId)
-            .when()
-                .get("/customers/payment-history/{customer-id}")
-            .then()
-                .statusCode(HttpStatus.SC_OK)
-                .body("success", equalTo(true))
-            .extract().jsonPath().getObject("response[0]", Payment.class);
+            Payment paid = given().pathParam("customer-id", customerId).when()
+                    .get("/customers/{customer-id}/payment-history/").then().statusCode(HttpStatus.SC_OK)
+                    .body("success", equalTo(true)).extract().jsonPath().getObject("response[0]", Payment.class);
 
             assertEquals(payment, paid);
         } finally {

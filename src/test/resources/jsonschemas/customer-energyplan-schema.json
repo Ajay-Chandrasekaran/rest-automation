@@ -53,9 +53,6 @@
                         "createdBy": {
                             "type": "string"
                         },
-                        "offerCode": {
-                            "type": "string"
-                        },
                         "offerName": {
                             "type": "string"
                         },

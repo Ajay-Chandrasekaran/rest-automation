@@ -1,0 +1,17 @@
+{
+  "transactionId": "1690984223-7f7b-4f1f-995a-7d813755aff8",
+  "amount": 1500,
+  "currency": "XOF",
+  "payMode": "cmlaunchoff",
+  "batterySlot": "1",
+  "oldBatteryUuid": "TGCML09016",
+  "newBatteryUuid": "TGCML00918",
+  "customerId": "1234567",
+  "agentId": "ALAVI Atsupé Senyonam",
+  "stationId": "DEMAKPOE 2",
+  "gatewayId": "CMASF81690984223",
+  "status": "payment-paid",
+  "vehicleNumber": "DP9591",
+  "updatedBy": "CUSTOMER_PORTA",
+  "locationId": "1643178165-d841-4932-9d11-0d39b8a62cfd"
+}

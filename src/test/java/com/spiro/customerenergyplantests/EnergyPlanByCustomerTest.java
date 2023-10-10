@@ -14,7 +14,7 @@ public class EnergyPlanByCustomerTest {
     /**
      * [GET] customers/{{customer-id}}/energy-plans
      *
-     *  getting energy plan of invalid customer shoudl fail.
+     *  getting energy plan of invalid customer should fail.
      */
     @Test
     public void invalidCustomerTest() {

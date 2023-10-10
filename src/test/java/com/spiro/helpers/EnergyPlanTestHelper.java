@@ -10,13 +10,20 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
 import com.spiro.entities.ActivatePlanForCustomer;
+import com.spiro.entities.CustomerByIdEnergyPlanResponse;
 import com.spiro.entities.EnergyPlan;
+import com.spiro.entities.EnergyPlanResponse1;
 import com.spiro.entities.Payment;
 import com.spiro.entities.PaymentHistoryList;
-import com.spiro.entities.SwapHistory;
+import com.spiro.entities.SwapHistoryResponse;
+import com.spiro.entities.SwapsHistory;
+
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 
 
-public class EnergyPlanTestHelper {
+public class EnergyPlanTestHelper {   
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -37,6 +44,7 @@ public class EnergyPlanTestHelper {
     public static Response activateEnergyPlanForCustomer(ActivatePlanForCustomer req) {
         String URL = "/customers/energy-plans";
         logger.info("Activating energy plan for customer - [PUT] {}", URL);
+        
         return given()
             .contentType(ContentType.JSON)
             .body(req)
@@ -66,6 +74,7 @@ public class EnergyPlanTestHelper {
         return given()
             .body(history.getHistory())
             .contentType(ContentType.JSON)
+            .body(paymentList)
         .when()
             .post(URL)
         .then().extract().response();

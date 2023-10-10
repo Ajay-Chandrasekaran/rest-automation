@@ -16,18 +16,10 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EnergyPlanResponse {
-    private Integer id;
-    private String customerId;
-    private String startDate;
-    private String endDate;
+public class SwapHistoryResponse {
+
+    private String message;
+    private Boolean success;
     private Integer status;
-    private Integer availedSwaps;
-    private Integer totalAmountPaid;
-    private Integer daysPaid;
-    private Integer missedDays;
-    private Double overdueAmount;
-    private String lastUpdatedDate;
-    private EnergyPlanInfo energyPlanInfo;
-    
+    private SwapsHistory response;
 }
