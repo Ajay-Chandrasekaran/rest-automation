@@ -11,7 +11,6 @@ import com.spiro.entities.CustomerByIdEnergyPlanResponse;
 import com.spiro.entities.EnergyPlan;
 import com.spiro.entities.EnergyPlanResponse1;
 import com.spiro.entities.Payment;
-import com.spiro.entities.PaymentHistoryList;
 import com.spiro.entities.SwapHistoryResponse;
 import com.spiro.entities.SwapsHistory;
 
